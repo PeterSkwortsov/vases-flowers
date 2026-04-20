@@ -1,8 +1,29 @@
 <?php
-session_start();
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 
-// Проверка авторизации
-if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+// Простая защита через секретный ключ
+// В запросе нужно передать ?key=ваш_ключ
+$SECRET_KEY = 'EverGreen2024';
+
+// Проверяем ключ в GET или POST
+$isAuthorized = false;
+
+if (isset($_GET['key']) && $_GET['key'] === $SECRET_KEY) {
+    $isAuthorized = true;
+}
+
+if (isset($_POST['key']) && $_POST['key'] === $SECRET_KEY) {
+    $isAuthorized = true;
+}
+
+// Проверяем заголовок X-Auth-Key
+$headers = getallheaders();
+if (isset($headers['X-Auth-Key']) && $headers['X-Auth-Key'] === $SECRET_KEY) {
+    $isAuthorized = true;
+}
+
+if (!$isAuthorized) {
     http_response_code(401);
     echo 'Unauthorized';
     exit;
@@ -13,28 +34,38 @@ $input = json_decode(file_get_contents('php://input'), true);
 
 if (!$input || !isset($input['products'])) {
     http_response_code(400);
-    echo 'Invalid data';
+    echo 'Invalid data: products array not found';
     exit;
 }
 
 // Путь к файлу с данными
-$dataFile = __DIR__ . '/../data/products.json';
+$dataDir = __DIR__ . '/../data';
+$dataFile = $dataDir . '/products.json';
 
 // Создаём папку data если её нет
-if (!file_exists(__DIR__ . '/../data')) {
-    mkdir(__DIR__ . '/../data', 0777, true);
+if (!file_exists($dataDir)) {
+    if (!mkdir($dataDir, 0777, true)) {
+        http_response_code(500);
+        echo 'Cannot create data directory';
+        exit;
+    }
 }
 
-// Сохраняем данные
+// Сохраняем данные в JSON
 $result = file_put_contents($dataFile, json_encode($input, JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE));
 
 if ($result === false) {
     http_response_code(500);
-    echo 'Error saving file';
+    echo 'Error saving products.json file';
     exit;
 }
 
 // Обновляем components/products-data.js
+$componentsDir = __DIR__ . '/../components';
+if (!file_exists($componentsDir)) {
+    mkdir($componentsDir, 0777, true);
+}
+
 $jsContent = "// Данные товаров — автоматически сгенерировано админкой\n";
 $jsContent .= "// Последнее обновление: " . date('Y-m-d H:i:s') . "\n\n";
 $jsContent .= "const productsData = " . json_encode($input['products'], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE) . ";\n\n";
@@ -68,7 +99,7 @@ $jsContent .= "        icon: \"🏺\"\n";
 $jsContent .= "    }\n";
 $jsContent .= "];\n";
 
-file_put_contents(__DIR__ . '/../components/products-data.js', $jsContent);
+file_put_contents($componentsDir . '/products-data.js', $jsContent);
 
 echo 'OK';
 ?>

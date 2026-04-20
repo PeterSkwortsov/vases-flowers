@@ -19,7 +19,7 @@
                     <span>🌾</span>
                     <span>EverGreen — Админка</span>
                 </div>
-                <a href="logout.php" class="logout-btn">Выйти</a>
+                <a href="login.php" class="logout-btn">Выйти</a>
             </div>
         </header>
 
@@ -36,6 +36,16 @@
         </main>
     </div>
 
+    <script>
+        // Передаём ключ из URL в глобальную переменную
+        const urlParams = new URLSearchParams(window.location.search);
+        window.ADMIN_KEY = urlParams.get('key') || '';
+
+        // Если нет ключа, перенаправляем на логин
+        if (!window.ADMIN_KEY) {
+            window.location.href = 'login.php';
+        }
+    </script>
     <script src="admin.js"></script>
 </body>
 

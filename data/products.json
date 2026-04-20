@@ -1,58 +1,58 @@
 {
-  "products": [
-    {
-      "id": 1,
-      "name": "Лавандовое поле",
-      "price": 2900,
-      "images": [
-        "images/flowwers1.jpg",
-        "images/flowwers2.jpg",
-        "images/flowwers3.jpg"
-      ],
-      "category": "Букеты",
-      "packaging": "kraft",
-      "packagingName": "Крафт упаковка",
-      "packagingIcon": "📜",
-      "description": "Ароматная лаванда в сочетании с полевыми травами создаёт атмосферу прованса.",
-      "sizes": "Высота: 45-50 см, Ширина: 30-35 см",
-      "composition": "Лаванда, статица, гипсофила, хлопок",
-      "care": "Беречь от прямых солнечных лучей, не поливать"
-    },
-    {
-      "id": 2,
-      "name": "Осенний вальс",
-      "price": 3500,
-      "images": [
-        "images/flowwers1.jpg",
-        "images/flowwers2.jpg",
-        "images/flowwers3.jpg"
-      ],
-      "category": "Композиции",
-      "packaging": "vase",
-      "packagingName": "В кашпо",
-      "packagingIcon": "🏺",
-      "description": "Тёплые оттенки осени в изящной композиции.",
-      "sizes": "Высота: 40-45 см, Ширина: 35-40 см",
-      "composition": "Гортензия, физалис, лимониум",
-      "care": "Беречь от влаги, размещать вдали от отопительных приборов"
-    },
-    {
-      "id": 3,
-      "name": "Эко-минимализм",
-      "price": 2700,
-      "images": [
-        "images/flowwers1.jpg",
-        "images/flowwers2.jpg",
-        "images/flowwers3.jpg"
-      ],
-      "category": "Панно",
-      "packaging": "none",
-      "packagingName": "Без упаковки",
-      "packagingIcon": "✨",
-      "description": "Лаконичная композиция в эко-стиле.",
-      "sizes": "Высота: 35-40 см, Ширина: 25-30 см",
-      "composition": "Пшеница, пампасная трава, эвкалипт",
-      "care": "Сухое место, защищённое от прямых солнечных лучей"
-    }
-  ]
+    "products": [
+        {
+            "id": 1,
+            "name": "РПМОРЫ",
+            "price": 4400,
+            "images": [
+                "images\/flowwers1.jpg",
+                "images\/flowwers2.jpg",
+                "images\/flowwers3.jpg"
+            ],
+            "category": "Букеты",
+            "packaging": "vase",
+            "packagingName": "В кашпо",
+            "packagingIcon": "🏺",
+            "description": "Ароматная лаванда в сочетании с полевыми травами создаёт атмосферу прованса.",
+            "sizes": "Высота: 45-50 см, Ширина: 30-35 см",
+            "composition": "Лаванда, статица, гипсофила, хлопок",
+            "care": "Беречь от прямых солнечных лучей, не поливать"
+        },
+        {
+            "id": 2,
+            "name": "Осенний вальс",
+            "price": 3500,
+            "images": [
+                "images\/flowwers1.jpg",
+                "images\/flowwers2.jpg",
+                "images\/flowwers3.jpg"
+            ],
+            "category": "Композиции",
+            "packaging": "vase",
+            "packagingName": "В кашпо",
+            "packagingIcon": "🏺",
+            "description": "Тёплые оттенки осени в изящной композиции.",
+            "sizes": "Высота: 40-45 см, Ширина: 35-40 см",
+            "composition": "Гортензия, физалис, лимониум",
+            "care": "Беречь от влаги, размещать вдали от отопительных приборов"
+        },
+        {
+            "id": 3,
+            "name": "Эко-минимализм",
+            "price": 2700,
+            "images": [
+                "images\/flowwers1.jpg",
+                "images\/flowwers2.jpg",
+                "images\/flowwers3.jpg"
+            ],
+            "category": "Панно",
+            "packaging": "none",
+            "packagingName": "Без упаковки",
+            "packagingIcon": "✨",
+            "description": "Лаконичная композиция в эко-стиле.",
+            "sizes": "Высота: 35-40 см, Ширина: 25-30 см",
+            "composition": "Пшеница, пампасная трава, эвкалипт",
+            "care": "Сухое место, защищённое от прямых солнечных лучей"
+        }
+    ]
 }

@@ -1,6 +1,9 @@
 // Данные
 let products = [];
 
+// Секретный ключ (должен совпадать с PHP)
+const SECRET_KEY = 'EverGreen2024';
+
 // Опции упаковки
 const packagingOptions = {
     'kraft': { name: 'Крафт упаковка', icon: '📜' },
@@ -8,10 +11,16 @@ const packagingOptions = {
     'none': { name: 'Без упаковки', icon: '✨' }
 };
 
+// Категории
+const categories = ['Букеты', 'Композиции', 'Панно'];
+
 // Загрузка данных
 async function loadProducts() {
     try {
-        const response = await fetch('../data/products.json');
+        const response = await fetch('../data/products.json?_=' + Date.now());
+        if (!response.ok) {
+            throw new Error('Файл не найден');
+        }
         const data = await response.json();
         products = data.products || [];
         renderProducts();
@@ -29,7 +38,7 @@ async function saveProducts() {
     saveStatus.className = 'save-status';
 
     try {
-        const response = await fetch('save-products.php', {
+        const response = await fetch('save-products.php?key=' + SECRET_KEY, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -49,7 +58,7 @@ async function saveProducts() {
             throw new Error(result);
         }
     } catch (error) {
-        saveStatus.textContent = '✗ Ошибка сохранения';
+        saveStatus.textContent = '✗ Ошибка: ' + error.message;
         saveStatus.className = 'save-status error';
         console.error(error);
     }
@@ -61,13 +70,13 @@ function addProduct() {
     products.push({
         id: newId,
         name: 'Новый товар',
-        price: 0,
-        images: ['images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'],
+        price: 1000,
+        images: [],
         category: 'Букеты',
         packaging: 'kraft',
         packagingName: 'Крафт упаковка',
         packagingIcon: '📜',
-        description: 'Описание товара',
+        description: 'Добавьте описание товара',
         sizes: 'Высота: 40-50 см',
         composition: 'Сухоцветы',
         care: 'Беречь от прямых солнечных лучей'
@@ -98,7 +107,7 @@ function updatePackaging(index, value) {
 
 // Добавление изображения
 function addImage(index) {
-    const newImage = prompt('Введите путь к изображению (например: images/flowwers1.jpg):');
+    const newImage = prompt('Введите путь к изображению (например: images/flowwers1.jpg):\n\nМожно оставить пустым');
     if (newImage && newImage.trim()) {
         products[index].images.push(newImage.trim());
         renderProducts();
@@ -107,12 +116,8 @@ function addImage(index) {
 
 // Удаление изображения
 function removeImage(productIndex, imageIndex) {
-    if (products[productIndex].images.length > 1) {
-        products[productIndex].images.splice(imageIndex, 1);
-        renderProducts();
-    } else {
-        alert('У товара должно быть хотя бы одно изображение');
-    }
+    products[productIndex].images.splice(imageIndex, 1);
+    renderProducts();
 }
 
 // Рендер всех товаров
@@ -120,7 +125,7 @@ function renderProducts() {
     const container = document.getElementById('productsList');
 
     if (products.length === 0) {
-        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280;">Нет товаров. Нажмите "Добавить товар"</div>';
+        container.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280;">📦 Нет товаров. Нажмите "Добавить товар"</div>';
         return;
     }
 
@@ -145,9 +150,7 @@ function renderProducts() {
                 <div class="form-group">
                     <label>Категория</label>
                     <select onchange="updateProduct(${index}, 'category', this.value)">
-                        <option value="Букеты" ${product.category === 'Букеты' ? 'selected' : ''}>Букеты</option>
-                        <option value="Композиции" ${product.category === 'Композиции' ? 'selected' : ''}>Композиции</option>
-                        <option value="Панно" ${product.category === 'Панно' ? 'selected' : ''}>Панно</option>
+                        ${categories.map(cat => `<option value="${cat}" ${product.category === cat ? 'selected' : ''}>${cat}</option>`).join('')}
                     </select>
                 </div>
                 
@@ -177,7 +180,7 @@ function renderProducts() {
                 
                 <div class="form-group">
                     <label>Описание</label>
-                    <textarea onchange="updateProduct(${index}, 'description', this.value)">${escapeHtml(product.description)}</textarea>
+                    <textarea onchange="updateProduct(${index}, 'description', this.value)" rows="3">${escapeHtml(product.description)}</textarea>
                 </div>
                 
                 <div class="form-group images-group">
@@ -191,6 +194,7 @@ function renderProducts() {
                         `).join('')}
                         <button class="add-image-btn" onclick="addImage(${index})">+ Добавить фото</button>
                     </div>
+                    ${product.images.length === 0 ? '<p style="font-size: 12px; color: #9ca3af; margin-top: 8px;">⚠️ Фото не добавлены. На главной будет отображаться заглушка.</p>' : ''}
                 </div>
             </div>
         </div>
@@ -211,8 +215,15 @@ function escapeHtml(str) {
 document.addEventListener('DOMContentLoaded', () => {
     loadProducts();
 
-    document.getElementById('addProductBtn').addEventListener('click', addProduct);
-    document.getElementById('saveAllBtn').addEventListener('click', saveProducts);
+    const addBtn = document.getElementById('addProductBtn');
+    if (addBtn) {
+        addBtn.addEventListener('click', addProduct);
+    }
+
+    const saveBtn = document.getElementById('saveAllBtn');
+    if (saveBtn) {
+        saveBtn.addEventListener('click', saveProducts);
+    }
 });
 
 // Делаем функции глобальными для onclick

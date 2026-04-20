@@ -1,24 +1,22 @@
 <?php
-session_start();
-
-// Установите свой пароль здесь
+// Простая авторизация через GET параметр
 $ADMIN_PASSWORD = 'EverGreen2024';
 
+// Если уже есть ключ в URL, перенаправляем в админку
+if (isset($_GET['key']) && $_GET['key'] === $ADMIN_PASSWORD) {
+    header('Location: index.html?key=' . $ADMIN_PASSWORD);
+    exit;
+}
+
+// Если отправлена форма
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     if ($password === $ADMIN_PASSWORD) {
-        $_SESSION['admin_logged_in'] = true;
-        header('Location: index.html');
+        header('Location: index.html?key=' . $ADMIN_PASSWORD);
         exit;
     } else {
         $error = 'Неверный пароль';
     }
-}
-
-// Если уже авторизован, перенаправляем
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    header('Location: index.html');
-    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -62,11 +60,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             color: #064e3b;
             margin-bottom: 8px;
         }
-        .login-subtitle {
-            color: #6b7280;
-            font-size: 14px;
-            margin-bottom: 32px;
-        }
         .input-group {
             margin-bottom: 24px;
             text-align: left;
@@ -85,7 +78,6 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             border-radius: 12px;
             font-size: 16px;
             font-family: 'Montserrat', sans-serif;
-            transition: all 0.3s;
         }
         .input-group input:focus {
             outline: none;
@@ -102,11 +94,9 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             font-size: 16px;
             font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
         }
         .login-btn:hover {
             background: #047857;
-            transform: translateY(-2px);
         }
         .error-message {
             background: #fef2f2;
@@ -120,9 +110,8 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
 </head>
 <body>
     <div class="login-container">
-        <div class="login-icon">🌾</div>
-        <h1 class="login-title">EverGreen</h1>
-        <p class="login-subtitle">Вход в панель управления</p>
+        <div class="login-icon">🔐</div>
+        <h1 class="login-title">Вход в админку</h1>
         
         <?php if (isset($error)): ?>
             <div class="error-message"><?php echo $error; ?></div>
