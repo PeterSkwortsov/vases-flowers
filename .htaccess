@@ -1,0 +1,11 @@
+# Запрет индексации всего сайта
+Header set X-Robots-Tag "noindex, nofollow"
+
+# Запрет доступа к папке components
+<FilesMatch "^.*\.(js|css)$">
+    Order Deny,Allow
+    Allow from all
+</FilesMatch>
+
+# Запрет просмотра директорий
+Options -Indexes

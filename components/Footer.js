@@ -12,7 +12,6 @@ const Footer = {
                             © 2024 EverGreen. С любовью к природе
                         </div>
                         <div class="footer-social">
-                            <a href="#" class="footer-social-link">Instagram</a>
                             <a href="#" class="footer-social-link">VK</a>
                             <a href="#" class="footer-social-link">Telegram</a>
                         </div>
