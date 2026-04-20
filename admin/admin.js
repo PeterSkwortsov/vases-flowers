@@ -37,6 +37,8 @@ async function saveProducts() {
     saveStatus.textContent = 'Сохранение...';
     saveStatus.className = 'save-status';
 
+    console.log('Отправляем товары:', products.length);
+
     try {
         const response = await fetch('save-products.php?key=' + SECRET_KEY, {
             method: 'POST',
@@ -47,9 +49,10 @@ async function saveProducts() {
         });
 
         const result = await response.text();
+        console.log('Ответ сервера:', result);
 
         if (result === 'OK') {
-            saveStatus.textContent = '✓ Сохранено!';
+            saveStatus.textContent = '✓ Сохранено! Товаров: ' + products.length;
             saveStatus.className = 'save-status success';
             setTimeout(() => {
                 saveStatus.textContent = '';
@@ -67,34 +70,42 @@ async function saveProducts() {
 // Добавление товара
 function addProduct() {
     const newId = Math.max(0, ...products.map(p => p.id), 0) + 1;
-    products.push({
+    const newProduct = {
         id: newId,
         name: 'Новый товар',
         price: 1000,
-        images: [],
+        images: ['images/flowwers1.jpg'],
         category: 'Букеты',
         packaging: 'kraft',
         packagingName: 'Крафт упаковка',
         packagingIcon: '📜',
         description: 'Добавьте описание товара',
-        sizes: 'Высота: 40-50 см',
+        sizes: 'Высота: 40-50 см, Ширина: 30-35 см',
         composition: 'Сухоцветы',
         care: 'Беречь от прямых солнечных лучей'
-    });
+    };
+    products.push(newProduct);
+    console.log('Добавлен товар:', newProduct);
     renderProducts();
+    // Автоматически сохраняем после добавления
+    saveProducts();
 }
 
 // Удаление товара
 function deleteProduct(index) {
     if (confirm('Удалить товар?')) {
-        products.splice(index, 1);
+        const deleted = products.splice(index, 1);
+        console.log('Удалён товар:', deleted[0]);
         renderProducts();
+        // Автоматически сохраняем после удаления
+        saveProducts();
     }
 }
 
 // Обновление поля товара
 function updateProduct(index, field, value) {
     products[index][field] = value;
+    console.log(`Обновлён товар ${index}, поле ${field}:`, value);
 }
 
 // Обновление упаковки
@@ -107,7 +118,7 @@ function updatePackaging(index, value) {
 
 // Добавление изображения
 function addImage(index) {
-    const newImage = prompt('Введите путь к изображению (например: images/flowwers1.jpg):\n\nМожно оставить пустым');
+    const newImage = prompt('Введите путь к изображению (например: images/flowwers1.jpg):');
     if (newImage && newImage.trim()) {
         products[index].images.push(newImage.trim());
         renderProducts();
@@ -116,13 +127,19 @@ function addImage(index) {
 
 // Удаление изображения
 function removeImage(productIndex, imageIndex) {
-    products[productIndex].images.splice(imageIndex, 1);
-    renderProducts();
+    if (products[productIndex].images.length > 1) {
+        products[productIndex].images.splice(imageIndex, 1);
+        renderProducts();
+    } else {
+        alert('У товара должно быть хотя бы одно изображение');
+    }
 }
 
 // Рендер всех товаров
 function renderProducts() {
     const container = document.getElementById('productsList');
+
+    if (!container) return;
 
     if (products.length === 0) {
         container.innerHTML = '<div style="text-align: center; padding: 60px; color: #6b7280;">📦 Нет товаров. Нажмите "Добавить товар"</div>';
@@ -194,11 +211,19 @@ function renderProducts() {
                         `).join('')}
                         <button class="add-image-btn" onclick="addImage(${index})">+ Добавить фото</button>
                     </div>
-                    ${product.images.length === 0 ? '<p style="font-size: 12px; color: #9ca3af; margin-top: 8px;">⚠️ Фото не добавлены. На главной будет отображаться заглушка.</p>' : ''}
+                    ${product.images.length === 0 ? '<p style="font-size: 12px; color: #9ca3af; margin-top: 8px;">⚠️ Фото не добавлены. Добавьте хотя бы одно фото.</p>' : ''}
                 </div>
             </div>
         </div>
     `).join('');
+
+    // Обновляем счётчик товаров
+    const saveStatus = document.getElementById('saveStatus');
+    if (saveStatus && saveStatus.textContent.includes('Сохранено')) {
+        // Не обновляем, если только что сохранили
+    } else {
+        console.log('Всего товаров в админке:', products.length);
+    }
 }
 
 function escapeHtml(str) {
@@ -213,6 +238,7 @@ function escapeHtml(str) {
 
 // Инициализация
 document.addEventListener('DOMContentLoaded', () => {
+    console.log('Админка загружена');
     loadProducts();
 
     const addBtn = document.getElementById('addProductBtn');
@@ -232,3 +258,5 @@ window.updateProduct = updateProduct;
 window.updatePackaging = updatePackaging;
 window.addImage = addImage;
 window.removeImage = removeImage;
+window.addProduct = addProduct;
+window.saveProducts = saveProducts;
