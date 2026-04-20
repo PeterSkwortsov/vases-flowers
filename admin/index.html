@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Админка — EverGreen</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="admin.css">
+</head>
+
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <div class="admin-header-content">
+                <div class="admin-logo">
+                    <span>🌾</span>
+                    <span>EverGreen — Админка</span>
+                </div>
+                <a href="logout.php" class="logout-btn">Выйти</a>
+            </div>
+        </header>
+
+        <main class="admin-main">
+            <div class="admin-toolbar">
+                <button id="addProductBtn" class="btn-primary">➕ Добавить товар</button>
+                <button id="saveAllBtn" class="btn-save">💾 Сохранить все изменения</button>
+                <span id="saveStatus" class="save-status"></span>
+            </div>
+
+            <div id="productsList" class="products-list">
+                <!-- Товары будут загружены через JS -->
+            </div>
+        </main>
+    </div>
+
+    <script src="admin.js"></script>
+</body>
+
+</html>
