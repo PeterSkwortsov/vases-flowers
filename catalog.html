@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Каталог — EverGreen студия сухоцветов</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Базовые стили -->
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ecfeff 100%);
+            color: #1a2e2a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+
+    <!-- Стили компонентов -->
+    <link rel="stylesheet" href="components/Header.css">
+    <link rel="stylesheet" href="components/CatalogHero.css">
+    <link rel="stylesheet" href="components/Filters.css">
+    <link rel="stylesheet" href="components/ProductCard.css">
+    <link rel="stylesheet" href="components/ProductModal.css">
+    <link rel="stylesheet" href="components/FavoritesModal.css">
+    <link rel="stylesheet" href="components/Features.css">
+    <link rel="stylesheet" href="components/Footer.css">
+</head>
+
+<body>
+    <div id="app">
+        <div id="header-container"></div>
+        <div id="hero-container"></div>
+        <div id="filters-container"></div>
+        <div id="products-container"></div>
+        <div id="features-container"></div>
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Модалки -->
+    <div id="product-modal-container"></div>
+    <div id="favorites-modal-container"></div>
+
+    <!-- Скрипты (важен порядок подключения) -->
+    <script src="components/products-data.js"></script>
+    <script src="components/Header.js"></script>
+    <script src="components/Footer.js"></script>
+    <script src="components/Features.js"></script>
+    <script src="components/CatalogHero.js"></script>
+    <script src="components/Filters.js"></script>
+    <script src="components/ProductCard.js"></script>
+    <script src="components/ProductModal.js"></script>
+    <script src="components/FavoritesModal.js"></script>
+    <script src="components/catalog-main.js"></script>
+</body>
+
+</html>

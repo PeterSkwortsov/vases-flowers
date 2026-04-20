@@ -1,0 +1,116 @@
+/* Categories Component */
+.categories-section {
+    padding: 60px 0 40px;
+    background: transparent;
+}
+
+.categories-grid {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+.category-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    width: 130px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.category-card:hover {
+    transform: translateY(-5px);
+}
+
+.category-circle {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #f5f0eb, #e8e0d5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 12px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.category-card:hover .category-circle {
+    transform: scale(1.05);
+    box-shadow: 0 8px 20px rgba(5, 150, 105, 0.15);
+}
+
+.category-emoji {
+    font-size: 48px;
+}
+
+.category-title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #2d3e2b;
+    margin-bottom: 4px;
+}
+
+.category-desc {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    color: #8ba888;
+    font-weight: 400;
+}
+
+@media (max-width: 768px) {
+    .categories-grid {
+        gap: 20px;
+    }
+
+    .category-card {
+        width: 100px;
+    }
+
+    .category-circle {
+        width: 80px;
+        height: 80px;
+    }
+
+    .category-emoji {
+        font-size: 38px;
+    }
+
+    .category-title {
+        font-size: 12px;
+    }
+}
+
+@media (max-width: 550px) {
+    .categories-grid {
+        gap: 16px;
+    }
+
+    .category-card {
+        width: 85px;
+    }
+
+    .category-circle {
+        width: 70px;
+        height: 70px;
+    }
+
+    .category-emoji {
+        font-size: 32px;
+    }
+
+    .category-title {
+        font-size: 11px;
+    }
+}

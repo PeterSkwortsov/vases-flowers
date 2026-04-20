@@ -1,0 +1,141 @@
+.main-header {
+    position: fixed;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(12px);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    z-index: 50;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
+}
+
+.header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.header-back-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    font-size: 20px;
+    text-decoration: none;
+    color: #065f46;
+}
+
+.header-logo {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    text-decoration: none;
+}
+
+.header-logo-icon {
+    font-size: 30px;
+}
+
+.header-logo-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    color: #065f46;
+}
+
+.header-logo-subtitle {
+    font-size: 12px;
+    color: #059669;
+}
+
+.header-nav {
+    display: flex;
+    gap: 40px;
+}
+
+.header-nav-link {
+    color: #4b5563;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: color 0.3s;
+}
+
+.header-nav-link:hover,
+.header-nav-link.active {
+    color: #059669;
+}
+
+.header-favorite-btn {
+    background: white;
+    color: #059669;
+    padding: 10px 24px;
+    border-radius: 9999px;
+    transition: all 0.3s;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    position: relative;
+}
+
+.header-favorite-btn:hover {
+    background: #ecfdf5;
+    transform: translateY(-2px);
+}
+
+.header-favorite-count {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+
+    .header-logo,
+    .header-nav {
+        display: none;
+    }
+
+    .header-content {
+        justify-content: space-between;
+    }
+
+    .header-favorite-btn {
+        padding: 8px 18px;
+        font-size: 13px;
+    }
+}
+
+@media (min-width: 769px) {
+    .header-logo {
+        display: flex;
+    }
+
+    .header-nav {
+        display: flex;
+    }
+}

@@ -1,0 +1,133 @@
+/* Hero Component */
+.hero-section {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    padding-top: 80px;
+    overflow: hidden;
+}
+
+.hero-bg-gradient {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, rgba(209, 250, 229, 0.4) 0%, rgba(153, 246, 228, 0.3) 50%, rgba(167, 243, 208, 0.4) 100%);
+}
+
+.hero-blur-1 {
+    position: absolute;
+    top: 80px;
+    right: 0;
+    width: 384px;
+    height: 384px;
+    background: rgba(245, 158, 11, 0.1);
+    border-radius: 50%;
+    filter: blur(80px);
+}
+
+.hero-blur-2 {
+    position: absolute;
+    bottom: 80px;
+    left: 0;
+    width: 384px;
+    height: 384px;
+    background: rgba(20, 184, 166, 0.1);
+    border-radius: 50%;
+    filter: blur(80px);
+}
+
+.hero-content {
+    position: relative;
+    z-index: 10;
+    max-width: 768px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.hero-badge {
+    display: inline-block;
+    margin-bottom: 24px;
+}
+
+.hero-badge span {
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(4px);
+    padding: 8px 16px;
+    border-radius: 9999px;
+    color: #047857;
+    font-size: 14px;
+}
+
+.hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #064e3b;
+    margin-bottom: 24px;
+    line-height: 1.2;
+}
+
+.hero-title-accent {
+    display: block;
+    color: #0d9488;
+}
+
+.hero-description {
+    font-size: 18px;
+    color: #374151;
+    margin-bottom: 40px;
+    max-width: 576px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: 1.6;
+}
+
+.hero-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    justify-content: center;
+}
+
+@media (min-width: 640px) {
+    .hero-buttons {
+        flex-direction: row;
+    }
+
+    .hero-title {
+        font-size: 72px;
+    }
+}
+
+.btn-primary {
+    background: #059669;
+    color: white;
+    padding: 12px 32px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.3s;
+    display: inline-block;
+}
+
+.btn-primary:hover {
+    background: #047857;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: white;
+    color: #047857;
+    padding: 12px 32px;
+    border-radius: 9999px;
+    text-decoration: none;
+    font-size: 16px;
+    transition: all 0.3s;
+    border: 2px solid #a7f3d0;
+    display: inline-block;
+}
+
+.btn-secondary:hover {
+    background: #ecfdf5;
+    transform: translateY(-2px);
+}

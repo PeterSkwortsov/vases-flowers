@@ -1,0 +1,108 @@
+/* Masterclasses Component */
+.masterclasses-section {
+    padding: 96px 0;
+}
+
+.masterclasses-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+}
+
+@media (min-width: 768px) {
+    .masterclasses-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.masterclass-card {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all 0.5s;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.masterclass-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+}
+
+.masterclass-image {
+    height: 256px;
+    overflow: hidden;
+}
+
+.masterclass-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.7s;
+}
+
+.masterclass-card:hover .masterclass-image img {
+    transform: scale(1.05);
+}
+
+.masterclass-content {
+    padding: 24px;
+}
+
+.masterclass-icon {
+    font-size: 36px;
+    margin-bottom: 12px;
+}
+
+.masterclass-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 8px;
+}
+
+.masterclass-desc {
+    color: #4b5563;
+    font-size: 14px;
+    margin-bottom: 16px;
+    line-height: 1.6;
+}
+
+.masterclass-meta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+}
+
+.masterclass-duration {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #6b7280;
+    font-size: 14px;
+}
+
+.masterclass-price {
+    font-size: 24px;
+    font-weight: 300;
+    color: #047857;
+}
+
+.masterclass-btn {
+    width: 100%;
+    background: linear-gradient(90deg, #10b981, #14b8a6);
+    color: white;
+    padding: 12px;
+    border-radius: 9999px;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.masterclass-btn:hover {
+    background: linear-gradient(90deg, #059669, #0d9488);
+    transform: translateY(-2px);
+}

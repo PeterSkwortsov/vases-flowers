@@ -1,0 +1,118 @@
+/* Filters Component */
+.filters-bar {
+    position: sticky;
+    top: 80px;
+    z-index: 40;
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    padding: 24px 0 16px;
+    border-bottom: 1px solid rgba(5, 150, 105, 0.1);
+}
+
+.filter-mobile-btn {
+    width: 100%;
+    background: white;
+    border-radius: 12px;
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-bottom: 16px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    color: #374151;
+}
+
+.filter-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+@media (min-width: 769px) {
+    .filter-panel {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .filter-mobile-btn {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .filter-panel {
+        display: none;
+    }
+
+    .filter-panel.mobile-open {
+        display: flex;
+    }
+}
+
+.filter-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+}
+
+.filter-label {
+    color: #4b5563;
+    font-weight: 500;
+    font-size: 14px;
+}
+
+.filter-chip {
+    padding: 8px 20px;
+    border-radius: 9999px;
+    transition: all 0.3s;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: white;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+}
+
+.filter-chip.active {
+    background: #059669;
+    color: white;
+    border-color: #059669;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.filter-chip:hover:not(.active) {
+    background: #ecfdf5;
+    border-color: #059669;
+}
+
+.sort-select {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 9999px;
+    padding: 8px 20px;
+    font-size: 14px;
+    font-family: 'Montserrat', sans-serif;
+    cursor: pointer;
+    outline: none;
+}
+
+.sort-select:focus {
+    border-color: #34d399;
+}
+
+.results-count {
+    margin-top: 16px;
+    text-align: center;
+    font-size: 14px;
+    color: #6b7280;
+}

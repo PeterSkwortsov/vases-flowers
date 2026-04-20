@@ -1,0 +1,12 @@
+{
+  "products": [
+    {
+      "id": 1,
+      "name": "Букет лаванды",
+      "price": 1250,
+      "image": "images/lavanda.webp",
+      "description": "Сушёная лаванда из Крыма",
+      "category": "букет"
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+/* Stories Modal Component */
+.stories-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stories-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.9);
+    backdrop-filter: blur(90px);
+}
+
+.stories-container {
+    position: relative;
+    width: 90%;
+    max-width: 500px;
+    height: 80%;
+    max-height: 700px;
+    background: transparent;
+    border-radius: 20px;
+    overflow: hidden;
+    z-index: 10;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+.stories-header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    padding: 16px;
+    z-index: 20;
+}
+
+.stories-progress {
+    width: 100%;
+    height: 3px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 3px;
+    overflow: hidden;
+    margin-bottom: 12px;
+}
+
+.progress-bar {
+    width: 0%;
+    height: 100%;
+    background: white;
+    border-radius: 3px;
+    transition: width 0.1s linear;
+}
+
+.stories-close {
+    position: absolute;
+    top: 8px;
+    right: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+    z-index: 21;
+}
+
+.stories-close:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.stories-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+.story-slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease;
+}
+
+.story-slide.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.story-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 60px 20px 30px;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+    color: white;
+    text-align: center;
+}
+
+.story-caption h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.story-caption p {
+    font-size: 14px;
+    opacity: 0.9;
+}
+
+.stories-nav {
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    transform: translateY(-50%);
+    display: flex;
+    justify-content: space-between;
+    padding: 0 10px;
+    z-index: 15;
+}
+
+.stories-prev,
+.stories-next {
+    background: rgba(0, 0, 0, 0.4);
+    border: none;
+    color: white;
+    font-size: 32px;
+    cursor: pointer;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s;
+}
+
+.stories-prev:hover,
+.stories-next:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.stories-indicators {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    z-index: 15;
+}
+
+.stories-indicator {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s;
+    cursor: pointer;
+}
+
+.stories-indicator.active {
+    background: white;
+    transform: scale(1.2);
+}
+
+@media (max-width: 768px) {
+    .stories-container {
+        width: 95%;
+        height: 85%;
+    }
+
+    .story-caption h3 {
+        font-size: 20px;
+    }
+
+    .stories-prev,
+    .stories-next {
+        width: 36px;
+        height: 36px;
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 480px) {
+    .stories-container {
+        width: 100%;
+        height: 100%;
+        border-radius: 0;
+    }
+}

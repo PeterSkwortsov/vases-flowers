@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Товар — Сухоцветы</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <h1>🌾 Сухоцветы</h1>
+                <p>натуральные композиции</p>
+            </div>
+            <nav>
+                <a href="index.html">Каталог</a>
+                <a href="#">О нас</a>
+                <a href="#">Контакты</a>
+                <a href="#" class="cart-link">🛒 <span id="cartCount">0</span></a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <div class="breadcrumbs">
+            <a href="index.html">Главная</a> / <span id="productName">Товар</span>
+        </div>
+        
+        <div class="product-page" id="productPage">
+            <div class="product-gallery">
+                <img id="productImage" src="" alt="">
+            </div>
+            <div class="product-info">
+                <h1 id="productTitle"></h1>
+                <div class="product-price" id="productPrice"></div>
+                <div class="product-description" id="productDescription"></div>
+                <button class="add-to-cart" id="addToCartBtn">Добавить в корзину</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>© 2026 Сухоцветы — природная красота</p>
+        </div>
+    </footer>
+
+    <script>
+        // Получаем id товара из URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = parseInt(urlParams.get('id'));
+        
+        async function loadProduct() {
+            const response = await fetch('products.json');
+            const data = await response.json();
+            const product = data.products.find(p => p.id === productId);
+            
+            if (product) {
+                document.title = `${product.name} — Сухоцветы`;
+                document.getElementById('productName').textContent = product.name;
+                document.getElementById('productImage').src = product.image;
+                document.getElementById('productTitle').textContent = product.name;
+                document.getElementById('productPrice').textContent = `${product.price.toLocaleString()} ₽`;
+                document.getElementById('productDescription').textContent = product.description;
+            } else {
+                document.getElementById('productPage').innerHTML = '<p>Товар не найден</p>';
+            }
+        }
+        
+        loadProduct();
+    </script>
+</body>
+</html>

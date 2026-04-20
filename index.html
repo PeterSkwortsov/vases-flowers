@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EverGreen — студия сухоцветов в Нижнем Новгороде</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+
+    <!-- Стили компонентов -->
+    <link rel="stylesheet" href="components/Header.css">
+    <link rel="stylesheet" href="components/Hero.css">
+    <link rel="stylesheet" href="components/Categories.css">
+    <link rel="stylesheet" href="components/ProductsSection.css">
+    <link rel="stylesheet" href="components/Masterclasses.css">
+    <link rel="stylesheet" href="components/About.css">
+    <link rel="stylesheet" href="components/Features.css">
+    <link rel="stylesheet" href="components/Contacts.css">
+    <link rel="stylesheet" href="components/Footer.css">
+    <link rel="stylesheet" href="components/StoriesModal.css">
+
+    <style>
+        /* Глобальные стили */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ecfeff 100%);
+            color: #1a2e2a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .no-scroll {
+            overflow: hidden;
+        }
+
+        /* Специальный класс для тегов секций */
+        .section-tag-teal {
+            color: #0d9488;
+        }
+
+        .section-divider-teal {
+            background: linear-gradient(90deg, #2dd4bf, #22d3ee);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="app">
+        <div id="header-container"></div>
+        <div id="hero-container"></div>
+        <div id="categories-container"></div>
+        <div id="products-container"></div>
+        <div id="masterclasses-container"></div>
+        <div id="about-container"></div>
+        <div id="features-container"></div>
+        <div id="contacts-container"></div>
+        <div id="footer-container"></div>
+    </div>
+
+    <!-- Модалки -->
+    <div id="stories-modal-container"></div>
+    <div id="product-modal-container"></div>
+
+    <!-- Скрипты -->
+    <script src="components/products-data.js"></script>
+    <script src="components/Header.js"></script>
+    <script src="components/Hero.js"></script>
+    <script src="components/Categories.js"></script>
+    <script src="components/ProductsSection.js"></script>
+    <script src="components/Masterclasses.js"></script>
+    <script src="components/About.js"></script>
+    <script src="components/Features.js"></script>
+    <script src="components/Contacts.js"></script>
+    <script src="components/Footer.js"></script>
+    <script src="components/StoriesModal.js"></script>
+    <script src="components/main.js"></script>
+</body>
+
+</html>

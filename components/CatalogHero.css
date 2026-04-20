@@ -1,0 +1,44 @@
+/* Catalog Hero Component */
+.catalog-hero-section {
+    position: relative;
+    padding-top: 128px;
+    padding-bottom: 48px;
+}
+
+.catalog-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 48px;
+    font-weight: 700;
+    color: #064e3b;
+    margin-bottom: 16px;
+}
+
+.catalog-hero-divider {
+    width: 96px;
+    height: 4px;
+    background: linear-gradient(90deg, #34d399, #2dd4bf);
+    margin: 0 auto 24px;
+    border-radius: 4px;
+}
+
+.catalog-hero-subtitle {
+    color: #4b5563;
+    font-size: 18px;
+    max-width: 672px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    .catalog-hero-section {
+        padding-top: 100px;
+        padding-bottom: 32px;
+    }
+
+    .catalog-hero-title {
+        font-size: 32px;
+    }
+
+    .catalog-hero-subtitle {
+        font-size: 14px;
+    }
+}

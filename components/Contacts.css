@@ -1,0 +1,117 @@
+/* Contacts Component */
+.contacts-section {
+    position: relative;
+    padding: 96px 0;
+    background: linear-gradient(135deg, #064e3b, #0f766e);
+    color: white;
+    overflow: hidden;
+}
+
+.contacts-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.2);
+}
+
+.contacts-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 36px;
+    font-weight: 700;
+    text-align: center;
+    margin-bottom: 16px;
+    position: relative;
+    z-index: 10;
+}
+
+@media (min-width: 768px) {
+    .contacts-title {
+        font-size: 48px;
+    }
+}
+
+.contacts-subtitle {
+    text-align: center;
+    font-size: 18px;
+    color: #a7f3d0;
+    margin-bottom: 48px;
+    position: relative;
+    z-index: 10;
+}
+
+.contacts-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    max-width: 896px;
+    margin: 0 auto 40px;
+    position: relative;
+    z-index: 10;
+}
+
+@media (min-width: 768px) {
+    .contacts-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+.contact-card {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(4px);
+    border-radius: 20px;
+    padding: 32px;
+    transition: all 0.3s;
+}
+
+.contact-card:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-4px);
+}
+
+.contact-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 24px;
+    font-weight: 600;
+    margin-bottom: 20px;
+}
+
+.contact-schedule {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.schedule-row {
+    display: flex;
+    justify-content: space-between;
+    color: #a7f3d0;
+}
+
+.schedule-time {
+    font-weight: 500;
+    color: white;
+}
+
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    color: #a7f3d0;
+}
+
+.contact-links a {
+    color: #a7f3d0;
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.contact-links a:hover {
+    color: white;
+}
+
+.contact-note {
+    text-align: center;
+    color: #a7f3d0;
+    font-size: 14px;
+    position: relative;
+    z-index: 10;
+}
