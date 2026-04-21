@@ -1,23 +1,132 @@
+/* Header Component */
 .main-header {
     position: fixed;
     width: 100%;
-    background: rgba(255, 255, 255, 0.5);
+    background: rgba(255, 255, 255, 0.95);
     backdrop-filter: blur(12px);
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    z-index: 50;
+    z-index: 1000;
 }
 
 .header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
+    padding: 12px 0;
 }
 
 .header-left {
     display: flex;
     align-items: center;
     gap: 16px;
+}
+
+/* Бургер-меню */
+.header-burger {
+    display: none;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 30px;
+    height: 21px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    z-index: 1100;
+    position: relative;
+}
+
+.header-burger span {
+    width: 100%;
+    height: 2px;
+    background: #065f46;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+/* Оверлей для бургер-меню */
+.menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1050;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.menu-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Мобильное меню - сплошная заливка */
+.header-mobile-menu {
+    position: fixed;
+    top: 0;
+    left: -100%;
+    width: 80%;
+    max-width: 320px;
+    height: 100%;
+    background: white;
+    z-index: 1100;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.header-mobile-menu.open {
+    left: 0;
+}
+
+.mobile-menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.mobile-menu-logo {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #065f46;
+}
+
+.mobile-menu-close {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6b7280;
+    z-index: 1101;
+}
+
+.mobile-nav {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    gap: 20px;
+    background: white;
+}
+
+.mobile-nav-link {
+    font-size: 18px;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+    padding: 8px 0;
+    transition: color 0.3s;
+    background: white;
+}
+
+.mobile-nav-link:hover,
+.mobile-nav-link.active {
+    color: #059669;
 }
 
 .header-back-btn {
@@ -43,18 +152,18 @@
 }
 
 .header-logo-icon {
-    font-size: 30px;
+    font-size: 28px;
 }
 
 .header-logo-title {
     font-family: 'Playfair Display', serif;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 600;
     color: #065f46;
 }
 
 .header-logo-subtitle {
-    font-size: 12px;
+    font-size: 10px;
     color: #059669;
 }
 
@@ -79,7 +188,7 @@
 .header-favorite-btn {
     background: white;
     color: #059669;
-    padding: 10px 24px;
+    padding: 8px 20px;
     border-radius: 9999px;
     transition: all 0.3s;
     font-size: 14px;
@@ -91,11 +200,7 @@
     align-items: center;
     gap: 8px;
     position: relative;
-}
-
-.header-favorite-btn:hover {
-    background: #ecfdf5;
-    transform: translateY(-2px);
+    z-index: 1001;
 }
 
 .header-favorite-count {
@@ -113,29 +218,86 @@
     justify-content: center;
 }
 
-@media (max-width: 768px) {
+/* Для каталога — кнопка избранное только с сердцем */
+.header-favorite-btn-icon-only {
+    background: white;
+    color: #059669;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    transition: all 0.3s;
+    font-size: 24px;
+    cursor: pointer;
+    border: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1001;
+}
 
-    .header-logo,
+.header-favorite-btn-icon-only:hover {
+    background: #ecfdf5;
+    transform: translateY(-2px);
+}
+
+.header-favorite-count-icon-only {
+    position: absolute;
+    top: -5px;
+    right: -5px;
+    background: #ef4444;
+    color: white;
+    font-size: 10px;
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+@media (max-width: 768px) {
+    .header-burger {
+        display: flex;
+    }
+
     .header-nav {
         display: none;
     }
 
-    .header-content {
-        justify-content: space-between;
+    .header-logo-title {
+        font-size: 16px;
+    }
+
+    .header-logo-subtitle {
+        font-size: 9px;
+    }
+
+    .header-logo-icon {
+        font-size: 24px;
     }
 
     .header-favorite-btn {
-        padding: 8px 18px;
-        font-size: 13px;
+        padding: 6px 14px;
+        font-size: 12px;
+    }
+
+    .header-favorite-btn span:first-child {
+        font-size: 14px;
     }
 }
 
 @media (min-width: 769px) {
-    .header-logo {
-        display: flex;
+    .header-burger {
+        display: none;
     }
 
-    .header-nav {
-        display: flex;
+    .header-mobile-menu {
+        display: none;
+    }
+
+    .menu-overlay {
+        display: none;
     }
 }

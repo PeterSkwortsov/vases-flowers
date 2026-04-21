@@ -7,64 +7,48 @@ const StoriesModal = {
     touchEndX: 0,
     onClose: null,
 
-    setStories(categoryId) {
-        // Для каждой категории свои 12 фото
-        const storiesImages = {
+    setStories(categoryId, config) {
+        if (!config || !config.images) return;
+
+        const descriptionsList = {
             'new': [
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'
+                'Свежая коллекция', 'Вдохновение природой', 'Уникальные сочетания',
+                'Тренды сезона', 'Натуральные оттенки', 'Эко-стиль',
+                'Ручная работа', 'Авторский подход', 'Природная гармония',
+                'Сезонные новинки', 'Эксклюзивные букеты', 'Подарок с душой'
             ],
             'packaging': [
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'
+                'Тест', 'Крафт бумага', 'Натуральные материалы',
+                'Льняные ленты', 'Джутовые верёвки', 'Бумага ручной работы',
+                'Сухоцветы в упаковке', 'Подарочный набор', 'Эстетичная подача',
+                'Экологичная упаковка', 'Стильное оформление', 'Подарок готовый'
             ],
             'compositions': [
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'
+                'Авторский подход', 'Ручная работа', 'Гармония цвета',
+                'Баланс форм', 'Уют в доме', 'Натуральные материалы',
+                'Долговечность', 'Уникальность', 'Интерьерное решение',
+                'Вдохновение природой', 'Эстетика минимализма', 'Природная красота'
             ],
             'bukets': [
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'
+                'Лаванда', 'Эвкалипт', 'Полевые травы',
+                'Пампасная трава', 'Хлопок', 'Гортензия',
+                'Статица', 'Физалис', 'Бессмертник',
+                'Лунулария', 'Эрмингия', 'Бруния'
             ],
             'care': [
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg',
-                'images/flowwers1.jpg', 'images/flowwers2.jpg', 'images/flowwers3.jpg'
+                'Правила ухода', 'Сохранение цвета', 'Долговечность',
+                'Защита от солнца', 'Сухая среда', 'Без полива',
+                'Чистка феном', 'Отсутствие влаги', 'Температурный режим',
+                'Проветривание', 'Без прямых лучей', 'Сохранение формы'
             ]
         };
 
-        const titles = {
-            'new': 'Новинки',
-            'packaging': 'Оформление',
-            'compositions': 'Композиции',
-            'bukets': 'Букеты',
-            'care': 'Уход'
-        };
-
-        const descriptionsList = {
-            'new': ['Свежая коллекция', 'Вдохновение природой', 'Уникальные сочетания', 'Тренды сезона', 'Натуральные оттенки', 'Эко-стиль', 'Ручная работа', 'Авторский подход', 'Природная гармония', 'Сезонные новинки', 'Эксклюзивные букеты', 'Подарок с душой'],
-            'packaging': ['Эко-упаковка', 'Крафт бумага', 'Натуральные материалы', 'Льняные ленты', 'Джутовые верёвки', 'Бумага ручной работы', 'Сухоцветы в упаковке', 'Подарочный набор', 'Эстетичная подача', 'Экологичная упаковка', 'Стильное оформление', 'Подарок готовый'],
-            'compositions': ['Авторский подход', 'Ручная работа', 'Гармония цвета', 'Баланс форм', 'Уют в доме', 'Натуральные материалы', 'Долговечность', 'Уникальность', 'Интерьерное решение', 'Вдохновение природой', 'Эстетика минимализма', 'Природная красота'],
-            'bukets': ['Лаванда', 'Эвкалипт', 'Полевые травы', 'Пампасная трава', 'Хлопок', 'Гортензия', 'Статица', 'Физалис', 'Бессмертник', 'Лунулария', 'Эрмингия', 'Бруния'],
-            'care': ['Правила ухода', 'Сохранение цвета', 'Долговечность', 'Защита от солнца', 'Сухая среда', 'Без полива', 'Чистка феном', 'Отсутствие влаги', 'Температурный режим', 'Проветривание', 'Без прямых лучей', 'Сохранение формы']
-        };
-
-        const images = storiesImages[categoryId] || storiesImages['new'];
         const descriptions = descriptionsList[categoryId] || descriptionsList['new'];
 
-        this.stories = images.map((img, idx) => ({
+        this.stories = config.images.map((img, idx) => ({
             id: idx,
             image: img,
-            title: titles[categoryId] || 'Сухоцветы',
+            title: config.title || 'Сухоцветы',
             description: descriptions[idx % descriptions.length]
         }));
 
@@ -91,7 +75,7 @@ const StoriesModal = {
                     </div>
                     <div class="stories-content" id="storiesContent">
                         <div class="story-slide active">
-                            <img src="${story.image}" alt="${story.title}">
+                            <img src="${story.image}" alt="${story.title}" onerror="this.src='https://placehold.co/600x800/e8f5e9/2e7d32?text=🌾'">
                             <div class="story-caption">
                                 <h3>${story.title}</h3>
                                 <p>${story.description}</p>
@@ -164,17 +148,22 @@ const StoriesModal = {
         const story = this.stories[this.currentIndex];
         const contentDiv = document.getElementById('storiesContent');
         const indicators = document.querySelectorAll('.stories-indicator');
+        const progressBar = document.querySelector('.progress-bar');
 
         if (contentDiv) {
             contentDiv.innerHTML = `
                 <div class="story-slide active">
-                    <img src="${story.image}" alt="${story.title}">
+                    <img src="${story.image}" alt="${story.title}" onerror="this.src='https://placehold.co/600x800/e8f5e9/2e7d32?text=🌾'">
                     <div class="story-caption">
                         <h3>${story.title}</h3>
                         <p>${story.description}</p>
                     </div>
                 </div>
             `;
+        }
+
+        if (progressBar) {
+            progressBar.style.width = '0%';
         }
 
         indicators.forEach((ind, idx) => {
@@ -199,10 +188,8 @@ const StoriesModal = {
 
         if (Math.abs(diff) > 50) {
             if (diff > 0) {
-                // Свайп влево — следующий
                 this.nextStory();
             } else {
-                // Свайп вправо — предыдущий
                 this.prevStory();
             }
         }
@@ -242,49 +229,45 @@ const StoriesModal = {
         const indicators = document.querySelectorAll('.stories-indicator');
 
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => this.hide());
+            closeBtn.onclick = () => this.hide();
         }
 
         if (prevBtn) {
-            prevBtn.addEventListener('click', () => this.prevStory());
+            prevBtn.onclick = () => this.prevStory();
         }
 
         if (nextBtn) {
-            nextBtn.addEventListener('click', () => this.nextStory());
+            nextBtn.onclick = () => this.nextStory();
         }
 
         if (modal) {
-            modal.addEventListener('click', (e) => {
+            modal.onclick = (e) => {
                 if (e.target === modal) this.hide();
-            });
+            };
         }
 
         indicators.forEach(indicator => {
-            indicator.addEventListener('click', () => {
+            indicator.onclick = () => {
                 const index = parseInt(indicator.dataset.index);
                 this.goToStory(index);
-            });
+            };
         });
 
-        // Свайп для мобильных устройств
         if (content) {
-            content.addEventListener('touchstart', (e) => this.handleTouchStart(e));
-            content.addEventListener('touchend', (e) => this.handleTouchEnd(e));
-
-            // Пауза при нажатии
-            content.addEventListener('mousedown', () => { this.isPlaying = false; });
-            content.addEventListener('mouseup', () => {
+            content.ontouchstart = (e) => this.handleTouchStart(e);
+            content.ontouchend = (e) => this.handleTouchEnd(e);
+            content.onmousedown = () => { this.isPlaying = false; };
+            content.onmouseup = () => {
                 setTimeout(() => { this.isPlaying = true; this.startProgress(); }, 100);
-            });
+            };
         }
 
-        // Клавиатура
-        document.addEventListener('keydown', (e) => {
+        document.onkeydown = (e) => {
             if (modal && modal.style.display !== 'none') {
                 if (e.key === 'ArrowLeft') this.prevStory();
                 if (e.key === 'ArrowRight') this.nextStory();
                 if (e.key === 'Escape') this.hide();
             }
-        });
+        };
     }
 };

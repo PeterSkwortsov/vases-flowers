@@ -1,17 +1,17 @@
 /* Products Section Component */
 .products-section {
-    padding: 96px 0;
+    padding: 60px 0;
     background: rgba(255, 255, 255, 0.4);
 }
 
 .section-header {
     text-align: center;
-    margin-bottom: 64px;
+    margin-bottom: 40px;
 }
 
 .section-tag {
     color: #059669;
-    font-size: 14px;
+    font-size: 12px;
     letter-spacing: 0.1em;
     text-transform: uppercase;
     display: block;
@@ -20,10 +20,10 @@
 
 .section-title {
     font-family: 'Playfair Display', serif;
-    font-size: 36px;
+    font-size: 28px;
     font-weight: 700;
     color: #064e3b;
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 @media (min-width: 768px) {
@@ -33,21 +33,21 @@
 }
 
 .section-divider {
-    width: 96px;
-    height: 4px;
+    width: 60px;
+    height: 3px;
     background: linear-gradient(90deg, #34d399, #2dd4bf);
-    margin: 0 auto 24px;
+    margin: 0 auto 16px;
     border-radius: 4px;
 }
 
 .section-subtitle {
     color: #4b5563;
-    font-size: 18px;
+    font-size: 14px;
     max-width: 672px;
     margin: 0 auto;
 }
 
-/* Horizontal Scroll */
+/* Horizontal Scroll with Snap */
 .products-scroll-container {
     position: relative;
 }
@@ -57,96 +57,114 @@
     top: 50%;
     transform: translateY(-50%);
     z-index: 10;
-    background: rgba(255, 255, 255, 0.9);
+    background: white;
     border-radius: 50%;
-    padding: 12px;
+    width: 44px;
+    height: 44px;
     border: none;
     cursor: pointer;
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     transition: all 0.3s;
-    font-size: 20px;
+    font-size: 24px;
     color: #059669;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .scroll-btn:hover {
-    background: white;
+    background: #059669;
+    color: white;
     transform: translateY(-50%) scale(1.05);
 }
 
 .scroll-left {
-    left: -16px;
+    left: -20px;
 }
 
 .scroll-right {
-    right: -16px;
+    right: -20px;
 }
 
 .products-scroll {
     display: flex;
     overflow-x: auto;
-    gap: 24px;
-    padding-bottom: 32px;
+    gap: 20px;
+    padding: 10px 20px 30px;
     scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
 }
 
 .products-scroll::-webkit-scrollbar {
-    display: none;
+    height: 4px;
+}
+
+.products-scroll::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.products-scroll::-webkit-scrollbar-thumb {
+    background: #059669;
+    border-radius: 10px;
 }
 
 .product-card {
     flex-shrink: 0;
-    width: 320px;
+    width: 280px;
+    scroll-snap-align: center;
     background: white;
     border-radius: 16px;
     overflow: hidden;
-    transition: all 0.5s;
+    transition: all 0.4s;
     cursor: pointer;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
 }
 
 .product-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
 }
 
 .product-image-wrapper {
     position: relative;
-    height: 320px;
+    height: 280px;
     overflow: hidden;
-    background: linear-gradient(135deg, #d1fae5, #99f6e4);
+    background: linear-gradient(135deg, #d1fae5, #ccfbf1);
 }
 
 .product-image {
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 0.7s;
+    transition: transform 0.5s;
 }
 
 .product-card:hover .product-image {
-    transform: scale(1.1);
+    transform: scale(1.05);
 }
 
 .product-badge {
     position: absolute;
-    top: 16px;
-    right: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 12px;
-    font-weight: 500;
+    top: 12px;
+    right: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
     color: #047857;
 }
 
 .product-packaging {
     position: absolute;
-    bottom: 16px;
-    left: 16px;
-    background: rgba(255, 255, 255, 0.9);
-    padding: 4px 12px;
-    border-radius: 9999px;
-    font-size: 12px;
+    bottom: 12px;
+    left: 12px;
+    background: rgba(255, 255, 255, 0.95);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
     font-weight: 500;
     color: #047857;
     display: flex;
@@ -155,21 +173,21 @@
 }
 
 .product-info {
-    padding: 24px;
+    padding: 16px;
 }
 
 .product-name {
     font-family: 'Playfair Display', serif;
-    font-size: 20px;
+    font-size: 16px;
     font-weight: 600;
     color: #1f2937;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .product-description {
     color: #6b7280;
-    font-size: 14px;
-    margin-bottom: 12px;
+    font-size: 12px;
+    margin-bottom: 10px;
     line-height: 1.4;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -184,23 +202,23 @@
 }
 
 .product-price {
-    font-size: 28px;
+    font-size: 20px;
     font-weight: 300;
     color: #047857;
 }
 
 .product-price span {
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .product-detail-btn {
     background: #ecfdf5;
     color: #047857;
-    padding: 8px 20px;
+    padding: 6px 16px;
     border-radius: 9999px;
     border: none;
     cursor: pointer;
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     transition: all 0.3s;
 }
@@ -212,16 +230,16 @@
 
 .view-all-wrapper {
     text-align: center;
-    margin-top: 48px;
+    margin-top: 30px;
 }
 
 .btn-view-all {
     background: white;
     color: #047857;
-    padding: 12px 32px;
+    padding: 10px 28px;
     border-radius: 9999px;
     text-decoration: none;
-    font-size: 16px;
+    font-size: 14px;
     transition: all 0.3s;
     border: 2px solid #a7f3d0;
     display: inline-flex;
@@ -229,25 +247,32 @@
     gap: 8px;
 }
 
-.btn-view-all:hover {
-    background: #ecfdf5;
-    transform: translateY(-2px);
-}
-
-@media (max-width: 768px) {
+@media (min-width: 768px) {
     .products-section {
-        padding: 60px 0;
+        padding: 96px 0;
     }
 
     .product-card {
-        width: 280px;
+        width: 320px;
     }
 
     .product-image-wrapper {
-        height: 280px;
+        height: 320px;
     }
+}
 
+@media (max-width: 767px) {
     .scroll-btn {
         display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .product-card {
+        width: 260px;
+    }
+
+    .product-image-wrapper {
+        height: 260px;
     }
 }

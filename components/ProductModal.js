@@ -31,15 +31,16 @@ const ProductModal = {
     render() {
         if (!this.product) return '';
 
-        const hasMultipleImages = this.product.images.length > 1;
+        const hasMultipleImages = this.product.images && this.product.images.length > 1;
         const thumbnailsHtml = hasMultipleImages ? this.product.images.map((img, idx) => `
             <div class="modal-thumb ${idx === this.currentPhotoIndex ? 'active' : ''}" data-index="${idx}">
-                <img src="${img}" alt="Фото ${idx + 1}">
+                <img src="${img}" alt="Фото ${idx + 1}" onerror="this.src='https://placehold.co/200x200/e8f5e9/2e7d32?text=🌾'">
             </div>
         `).join('') : '';
 
         return `
             <div class="product-modal" id="productModal">
+                <div class="product-modal-overlay"></div>
                 <div class="product-modal-content">
                     <button class="modal-close-btn" id="modalCloseBtn">✕</button>
                     <button class="modal-favorite-btn" id="modalFavoriteBtn">
@@ -49,7 +50,7 @@ const ProductModal = {
                     <div class="modal-grid">
                         <div class="modal-gallery">
                             <div class="modal-main-image">
-                                <img id="modalMainImage" src="${this.product.images[this.currentPhotoIndex]}" alt="${this.product.name}" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
+                                <img id="modalMainImage" src="${this.product.images[0]}" alt="${this.product.name}" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
                             </div>
                             ${hasMultipleImages ? `
                                 <div class="modal-thumbnails" id="modalThumbnails">
@@ -96,67 +97,82 @@ const ProductModal = {
     },
 
     bindEvents() {
+        const modal = document.getElementById('productModal');
         const closeBtn = document.getElementById('modalCloseBtn');
         const favBtn = document.getElementById('modalFavoriteBtn');
         const buyBtn = document.getElementById('modalBuyBtn');
-        const modal = document.getElementById('productModal');
+        const overlay = document.querySelector('.product-modal-overlay');
         const thumbnails = document.querySelectorAll('.modal-thumb');
 
+        // Закрытие по крестику
         if (closeBtn) {
-            closeBtn.addEventListener('click', () => {
+            closeBtn.onclick = (e) => {
+                e.stopPropagation();
                 if (this.onClose) this.onClose();
-            });
+            };
         }
 
+        // Закрытие по оверлею
+        if (overlay) {
+            overlay.onclick = (e) => {
+                e.stopPropagation();
+                if (this.onClose) this.onClose();
+            };
+        }
+
+        // Избранное
         if (favBtn) {
-            favBtn.addEventListener('click', () => {
+            favBtn.onclick = (e) => {
+                e.stopPropagation();
                 if (this.onFavoriteToggle && this.product) {
                     this.onFavoriteToggle(this.product.id);
                 }
-            });
+                // Обновляем кнопку
+                const btn = document.getElementById('modalFavoriteBtn');
+                if (btn) {
+                    btn.innerHTML = this.isFavorite() ? '❤️' : '🤍';
+                }
+            };
         }
 
+        // Купить
         if (buyBtn) {
-            buyBtn.addEventListener('click', () => {
+            buyBtn.onclick = (e) => {
+                e.stopPropagation();
                 if (this.onBuy && this.product) {
                     this.onBuy(this.product);
                 }
-            });
+            };
         }
 
+        // Переключение фото по миниатюрам
         thumbnails.forEach(thumb => {
-            thumb.addEventListener('click', () => {
+            thumb.onclick = (e) => {
+                e.stopPropagation();
                 this.currentPhotoIndex = parseInt(thumb.dataset.index);
-                this.updateMainImage();
-                this.updateActiveThumb();
-            });
-        });
-
-        if (modal) {
-            modal.addEventListener('click', (e) => {
-                if (e.target === modal && this.onClose) {
-                    this.onClose();
+                const mainImage = document.getElementById('modalMainImage');
+                if (mainImage && this.product) {
+                    mainImage.src = this.product.images[this.currentPhotoIndex];
                 }
-            });
-        }
-    },
-
-    updateMainImage() {
-        const mainImage = document.getElementById('modalMainImage');
-        if (mainImage && this.product) {
-            mainImage.src = this.product.images[this.currentPhotoIndex];
-        }
-    },
-
-    updateActiveThumb() {
-        const thumbnails = document.querySelectorAll('.modal-thumb');
-        thumbnails.forEach((thumb, idx) => {
-            if (idx === this.currentPhotoIndex) {
-                thumb.classList.add('active');
-            } else {
-                thumb.classList.remove('active');
-            }
+                // Обновляем активный класс
+                thumbnails.forEach((t, idx) => {
+                    if (idx === this.currentPhotoIndex) {
+                        t.classList.add('active');
+                    } else {
+                        t.classList.remove('active');
+                    }
+                });
+            };
         });
+
+        // Закрытие по Escape
+        const handleEscape = (e) => {
+            if (e.key === 'Escape' && this.onClose) {
+                this.onClose();
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+        this._handleEscape = handleEscape;
     },
 
     show() {
@@ -174,18 +190,18 @@ const ProductModal = {
             container.innerHTML = '';
             document.body.classList.remove('no-scroll');
         }
+        if (this._handleEscape) {
+            document.removeEventListener('keydown', this._handleEscape);
+        }
     },
 
     rerender() {
         const container = document.getElementById('product-modal-container');
         if (container && container.innerHTML !== '') {
-            const wasVisible = container.innerHTML !== '';
-            if (wasVisible) {
-                const scrollPosition = window.scrollY;
-                container.innerHTML = this.render();
-                this.bindEvents();
-                window.scrollTo(0, scrollPosition);
-            }
+            const scrollPosition = window.scrollY;
+            container.innerHTML = this.render();
+            this.bindEvents();
+            window.scrollTo(0, scrollPosition);
         }
     }
 };

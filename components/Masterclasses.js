@@ -8,10 +8,19 @@ const Masterclasses = {
     render() {
         if (!this.data.length) return '<div></div>';
 
-        const html = this.data.map(mc => `
+        // Обновляем пути к изображениям
+        const updatedData = this.data.map((mc, index) => {
+            const images = ['2.jpeg', '4.jpeg', '6.jpeg', '8.jpeg'];
+            return {
+                ...mc,
+                image: `images/${images[index % images.length]}`
+            };
+        });
+
+        const html = updatedData.map(mc => `
             <div class="masterclass-card">
                 <div class="masterclass-image">
-                    <img src="${mc.image}" alt="${mc.name}">
+                    <img src="${mc.image}" alt="${mc.name}" onerror="this.src='https://placehold.co/600x400/e8f5e9/2e7d32?text=🌾'">
                 </div>
                 <div class="masterclass-content">
                     <div class="masterclass-icon">${mc.icon}</div>

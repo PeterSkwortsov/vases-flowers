@@ -3,7 +3,7 @@ error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 // Простая защита через секретный ключ
-$SECRET_KEY = 'EverGreen2024';
+$SECRET_KEY = 'peter';
 
 // Проверяем ключ
 $isAuthorized = false;

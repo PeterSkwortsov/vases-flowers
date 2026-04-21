@@ -4,7 +4,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>EverGreen — студия сухоцветов в Нижнем Новгороде</title>
+
+    <!-- Запрет индексации (сайт в разработке) -->
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="googlebot" content="noindex, nofollow">
+    <meta name="yandex" content="noindex, nofollow">
+
+    <title>Глиняный сад — студия сухоцветов в Нижнем Новгороде</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
         rel="stylesheet">
@@ -20,12 +26,7 @@
     <link rel="stylesheet" href="components/Contacts.css">
     <link rel="stylesheet" href="components/Footer.css">
     <link rel="stylesheet" href="components/StoriesModal.css">
-
-<!-- Запрет индексации (сайт в разработке) -->
-<meta name="robots" content="noindex, nofollow">
-<meta name="googlebot" content="noindex, nofollow">
-<meta name="yandex" content="noindex, nofollow">
-
+    <link rel="stylesheet" href="components/ProductModal.css">
 
     <style>
         /* Глобальные стили */
@@ -56,7 +57,6 @@
             overflow: hidden;
         }
 
-        /* Специальный класс для тегов секций */
         .section-tag-teal {
             color: #0d9488;
         }
@@ -90,7 +90,7 @@
     <div id="stories-modal-container"></div>
     <div id="product-modal-container"></div>
 
-    <!-- Скрипты -->
+    <!-- Скрипты (важен порядок) -->
     <script src="components/products-data.js"></script>
     <script src="components/Header.js"></script>
     <script src="components/Hero.js"></script>
@@ -102,6 +102,7 @@
     <script src="components/Contacts.js"></script>
     <script src="components/Footer.js"></script>
     <script src="components/StoriesModal.js"></script>
+    <script src="components/ProductModal.js"></script>
     <script src="components/main.js"></script>
 </body>
 

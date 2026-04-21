@@ -2,7 +2,7 @@
 let products = [];
 
 // Секретный ключ (должен совпадать с PHP)
-const SECRET_KEY = 'EverGreen2024';
+const SECRET_KEY = 'peter';
 
 // Опции упаковки
 const packagingOptions = {

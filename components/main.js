@@ -1,49 +1,96 @@
 // Главная страница — сборщик компонентов
 document.addEventListener('DOMContentLoaded', () => {
-    // Настройка Header
+    let favorites = [];
+
+    function loadFavorites() {
+        const saved = localStorage.getItem('favorites');
+        if (saved) {
+            favorites = JSON.parse(saved);
+        }
+        updateFavoritesUI();
+    }
+
+    function saveFavorites() {
+        localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateFavoritesUI();
+    }
+
+    function toggleFavorite(productId) {
+        const index = favorites.indexOf(productId);
+        if (index === -1) {
+            favorites.push(productId);
+        } else {
+            favorites.splice(index, 1);
+        }
+        saveFavorites();
+        if (ProductModal && ProductModal.product && ProductModal.product.id === productId) {
+            ProductModal.setData(ProductModal.product, favorites);
+            ProductModal.rerender();
+        }
+    }
+
+    function updateFavoritesUI() {
+        if (Header && Header.updateFavoritesCount) {
+            Header.updateFavoritesCount(favorites.length);
+        }
+    }
+
     if (Header && Header.setCurrentPage) {
         Header.setCurrentPage('index');
     }
 
-    // Рендер Header
     const headerContainer = document.getElementById('header-container');
     if (headerContainer && Header && Header.render) {
         headerContainer.innerHTML = Header.render();
         if (Header.bindEvents) Header.bindEvents();
     }
 
-    // Рендер Hero
     const heroContainer = document.getElementById('hero-container');
     if (heroContainer && Hero && Hero.render) {
         heroContainer.innerHTML = Hero.render();
     }
 
-    // Рендер Categories
     const categoriesContainer = document.getElementById('categories-container');
     if (categoriesContainer && Categories && Categories.render) {
         categoriesContainer.innerHTML = Categories.render();
 
-        // Настройка сторис при клике на категорию
-        Categories.setOnCategoryClick((category) => {
-            StoriesModal.setStories(category);
+        Categories.setOnCategoryClick((category, config) => {
+            StoriesModal.setStories(category, config);
             StoriesModal.show();
         });
 
         Categories.bindEvents();
     }
 
-    // Рендер ProductsSection (8 товаров)
+    if (ProductModal) {
+        ProductModal.setOnClose(() => {
+            ProductModal.hide();
+        });
+
+        ProductModal.setOnFavoriteToggle((productId) => {
+            toggleFavorite(productId);
+        });
+
+        ProductModal.setOnBuy((product) => {
+            alert(`Товар "${product.name}" добавлен в корзину!`);
+            ProductModal.hide();
+        });
+    }
+
     const productsContainer = document.getElementById('products-container');
     if (productsContainer && ProductsSection && ProductsSection.render) {
         ProductsSection.setData(productsData);
         ProductsSection.setOnProductClick((productId) => {
-            alert(`Товар ${productId} выбран. Страница товара в разработке`);
+            const product = productsData.find(p => p.id === productId);
+            if (product && ProductModal) {
+                ProductModal.setData(product, favorites);
+                ProductModal.show();
+            }
         });
         productsContainer.innerHTML = ProductsSection.render();
         ProductsSection.bindEvents();
     }
 
-    // Рендер Masterclasses
     const masterclassesContainer = document.getElementById('masterclasses-container');
     if (masterclassesContainer && Masterclasses && Masterclasses.render) {
         Masterclasses.setData(masterClassesData);
@@ -51,31 +98,28 @@ document.addEventListener('DOMContentLoaded', () => {
         Masterclasses.bindEvents();
     }
 
-    // Рендер About
     const aboutContainer = document.getElementById('about-container');
     if (aboutContainer && About && About.render) {
         aboutContainer.innerHTML = About.render();
     }
 
-    // Рендер Features
     const featuresContainer = document.getElementById('features-container');
     if (featuresContainer && Features && Features.render) {
         featuresContainer.innerHTML = Features.render();
     }
 
-    // Рендер Contacts
     const contactsContainer = document.getElementById('contacts-container');
     if (contactsContainer && Contacts && Contacts.render) {
         contactsContainer.innerHTML = Contacts.render();
     }
 
-    // Рендер Footer
     const footerContainer = document.getElementById('footer-container');
     if (footerContainer && Footer && Footer.render) {
         footerContainer.innerHTML = Footer.render();
     }
 
-    // Плавная прокрутка
+    loadFavorites();
+
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const target = document.querySelector(this.getAttribute('href'));

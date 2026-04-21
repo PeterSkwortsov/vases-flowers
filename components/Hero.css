@@ -1,45 +1,85 @@
 /* Hero Component */
 .hero-section {
     position: relative;
-    min-height: 100vh;
+    min-height: 90vh;
     display: flex;
     align-items: center;
-    padding-top: 80px;
+    padding: 120px 0 80px;
     overflow: hidden;
+    background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 10%, #ffffff 100%);
 }
 
-.hero-bg-gradient {
+/* Декоративный узор фона (светлый) */
+.hero-bg-pattern {
     position: absolute;
-    inset: 0;
-    background: linear-gradient(135deg, rgba(209, 250, 229, 0.4) 0%, rgba(153, 246, 228, 0.3) 50%, rgba(167, 243, 208, 0.4) 100%);
-}
-
-.hero-blur-1 {
-    position: absolute;
-    top: 80px;
-    right: 0;
-    width: 384px;
-    height: 384px;
-    background: rgba(245, 158, 11, 0.1);
-    border-radius: 50%;
-    filter: blur(80px);
-}
-
-.hero-blur-2 {
-    position: absolute;
-    bottom: 80px;
+    top: 0;
     left: 0;
-    width: 384px;
-    height: 384px;
-    background: rgba(20, 184, 166, 0.1);
-    border-radius: 50%;
-    filter: blur(80px);
+    width: 100%;
+    height: 100%;
+    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" opacity="0.04"><path fill="none" stroke="%23059469" stroke-width="0.8" d="M20,30 Q30,20 40,30 T60,30 T80,30 M20,50 Q30,40 40,50 T60,50 T80,50 M20,70 Q30,60 40,70 T60,70 T80,70 M10,20 L90,20 M10,40 L90,40 M10,60 L90,60 M10,80 L90,80"/><circle cx="25" cy="25" r="3" fill="%23059469" opacity="0.3"/><circle cx="75" cy="45" r="3" fill="%23059469" opacity="0.3"/><circle cx="50" cy="75" r="3" fill="%23059469" opacity="0.3"/></svg>');
+    background-repeat: repeat;
+    background-size: 80px;
+}
+
+/* Общие стили для ромашек */
+.hero-daisy {
+    position: absolute;
+    z-index: 5;
+    pointer-events: none;
+    filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.08));
+    animation: floatDaisy 6s ease-in-out infinite;
+}
+
+/* Первая ромашка (большая, справа внизу) */
+.hero-daisy-1 {
+    bottom: 0%;
+    right: 3%;
+    width: 400px;
+    height: 500px;
+    animation-delay: 0s;
+}
+
+/* Вторая ромашка (средняя, слева внизу) */
+.hero-daisy-2 {
+    bottom: 5%;
+    left: 0%;
+    width: 250px;
+    height: 350px;
+    animation-delay: 1s;
+    animation-duration: 7s;
+}
+
+/* Третья ромашка (маленькая, сверху справа) */
+.hero-daisy-3 {
+    top: 8%;
+    right: 12%;
+    width: 160px;
+    height: 220px;
+    animation-delay: 2s;
+    animation-duration: 5s;
+}
+
+.daisy-svg {
+    width: 100%;
+    height: 100%;
+}
+
+@keyframes floatDaisy {
+
+    0%,
+    100% {
+        transform: translateY(0px) rotate(0deg);
+    }
+
+    50% {
+        transform: translateY(-15px) rotate(3deg);
+    }
 }
 
 .hero-content {
     position: relative;
     z-index: 10;
-    max-width: 768px;
+    max-width: 800px;
     margin: 0 auto;
     text-align: center;
 }
@@ -47,39 +87,58 @@
 .hero-badge {
     display: inline-block;
     margin-bottom: 24px;
+    animation: fadeInUp 0.6s ease-out;
 }
 
 .hero-badge span {
     background: rgba(255, 255, 255, 0.6);
     backdrop-filter: blur(4px);
-    padding: 8px 16px;
-    border-radius: 9999px;
+    padding: 8px 20px;
+    border-radius: 40px;
     color: #047857;
-    font-size: 14px;
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    border: 1px solid rgba(5, 150, 105, 0.2);
 }
 
 .hero-title {
     font-family: 'Playfair Display', serif;
-    font-size: 48px;
+    font-size: 56px;
     font-weight: 700;
     color: #064e3b;
     margin-bottom: 24px;
     line-height: 1.2;
+    animation: fadeInUp 0.6s ease-out 0.1s both;
 }
 
 .hero-title-accent {
-    display: block;
+    display: inline-block;
     color: #0d9488;
+    position: relative;
+}
+
+.hero-title-accent::after {
+    content: '';
+    position: absolute;
+    bottom: 8px;
+    left: 0;
+    width: 100%;
+    height: 8px;
+    background: rgba(13, 148, 136, 0.25);
+    border-radius: 4px;
+    z-index: -1;
 }
 
 .hero-description {
     font-size: 18px;
     color: #374151;
     margin-bottom: 40px;
-    max-width: 576px;
+    max-width: 600px;
     margin-left: auto;
     margin-right: auto;
-    line-height: 1.6;
+    line-height: 1.7;
+    animation: fadeInUp 0.6s ease-out 0.2s both;
 }
 
 .hero-buttons {
@@ -87,47 +146,140 @@
     flex-direction: column;
     gap: 16px;
     justify-content: center;
+    animation: fadeInUp 0.6s ease-out 0.3s both;
 }
 
 @media (min-width: 640px) {
     .hero-buttons {
         flex-direction: row;
     }
-
-    .hero-title {
-        font-size: 72px;
-    }
 }
 
 .btn-primary {
     background: #059669;
     color: white;
-    padding: 12px 32px;
-    border-radius: 9999px;
+    padding: 14px 36px;
+    border-radius: 50px;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 500;
     transition: all 0.3s;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(5, 150, 105, 0.3);
 }
 
 .btn-primary:hover {
     background: #047857;
-    transform: translateY(-2px);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(5, 150, 105, 0.4);
 }
 
 .btn-secondary {
-    background: white;
-    color: #047857;
-    padding: 12px 32px;
-    border-radius: 9999px;
+    background: transparent;
+    color: #059669;
+    padding: 12px 34px;
+    border-radius: 50px;
     text-decoration: none;
     font-size: 16px;
+    font-weight: 500;
     transition: all 0.3s;
     border: 2px solid #a7f3d0;
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
 }
 
 .btn-secondary:hover {
     background: #ecfdf5;
-    transform: translateY(-2px);
+    color: #047857;
+    transform: translateY(-3px);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .hero-section {
+        padding: 100px 0 60px;
+        min-height: auto;
+    }
+
+    .hero-title {
+        font-size: 36px;
+    }
+
+    .hero-title-accent::after {
+        bottom: 4px;
+        height: 6px;
+    }
+
+    .hero-description {
+        font-size: 16px;
+    }
+
+    .hero-daisy-1 {
+        width: 250px;
+        height: 320px;
+        bottom: -5%;
+        right: -5%;
+    }
+
+    .hero-daisy-2 {
+        width: 160px;
+        height: 220px;
+        bottom: 0%;
+        left: -5%;
+    }
+
+    .hero-daisy-3 {
+        width: 100px;
+        height: 140px;
+        top: 5%;
+        right: 5%;
+    }
+}
+
+@media (max-width: 480px) {
+    .hero-title {
+        font-size: 28px;
+    }
+
+    .btn-primary,
+    .btn-secondary {
+        padding: 10px 24px;
+        font-size: 14px;
+    }
+
+    .hero-daisy-1 {
+        width: 180px;
+        height: 240px;
+        opacity: 0.6;
+    }
+
+    .hero-daisy-2 {
+        width: 120px;
+        height: 170px;
+        opacity: 0.5;
+    }
+
+    .hero-daisy-3 {
+        width: 80px;
+        height: 110px;
+        opacity: 0.4;
+    }
 }

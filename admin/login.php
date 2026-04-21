@@ -1,6 +1,6 @@
 <?php
 // Простая авторизация через GET параметр
-$ADMIN_PASSWORD = 'EverGreen2024';
+$ADMIN_PASSWORD = 'peter';
 
 // Если уже есть ключ в URL, перенаправляем в админку
 if (isset($_GET['key']) && $_GET['key'] === $ADMIN_PASSWORD) {

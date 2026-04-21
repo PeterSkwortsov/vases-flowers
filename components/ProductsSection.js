@@ -3,7 +3,6 @@ const ProductsSection = {
     onProductClick: null,
 
     setData(products) {
-        // Показываем первые 8 товаров на главной
         this.products = products.slice(0, 8);
     },
 
@@ -17,7 +16,7 @@ const ProductsSection = {
         const productsHtml = this.products.map(product => `
             <div class="product-card" data-id="${product.id}">
                 <div class="product-image-wrapper">
-                    <img src="${product.images[0]}" alt="${product.name}" class="product-image" onerror="this.src='https://placehold.co/800x1000/e8f5e9/2e7d32?text=🌾'">
+                    <img src="${product.images[0] || 'images/1.jpeg'}" alt="${product.name}" class="product-image" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
                     <div class="product-badge">${product.category}</div>
                     <div class="product-packaging">
                         <span>${product.packagingIcon}</span>
@@ -26,7 +25,7 @@ const ProductsSection = {
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>
-                    <p class="product-description">${product.description.substring(0, 80)}...</p>
+                    <p class="product-description">${product.description.substring(0, 70)}...</p>
                     <div class="product-footer">
                         <div class="product-price">${product.price} <span>₽</span></div>
                         <button class="product-detail-btn" data-id="${product.id}">Подробнее</button>
