@@ -16,7 +16,10 @@ const ProductsSection = {
         const productsHtml = this.products.map(product => `
             <div class="product-card" data-id="${product.id}">
                 <div class="product-image-wrapper">
-                    <img src="${product.images[0] || 'images/1.jpeg'}" alt="${product.name}" class="product-image" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
+                    <img src="${product.images[0] || 'images/placeholder.jpg'}" 
+                         alt="${product.name}" 
+                         class="product-image" 
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                     <div class="product-badge">${product.category}</div>
                     <div class="product-packaging">
                         <span>${product.packagingIcon}</span>

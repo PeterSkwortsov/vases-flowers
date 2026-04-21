@@ -19,7 +19,7 @@ const Features = {
             <section class="features-section">
                 <div class="container">
                     <div class="features-grid">
-                        ${html}
+                         ${html}
                     </div>
                 </div>
             </section>

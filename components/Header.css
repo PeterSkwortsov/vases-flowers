@@ -63,7 +63,7 @@
     visibility: visible;
 }
 
-/* Мобильное меню - сплошная заливка */
+/* Мобильное меню - на всю высоту */
 .header-mobile-menu {
     position: fixed;
     top: 0;
@@ -75,6 +75,8 @@
     z-index: 1100;
     transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
 }
 
 .header-mobile-menu.open {
@@ -110,38 +112,29 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    gap: 20px;
+    gap: 16px;
     background: white;
+    flex: 1;
 }
 
 .mobile-nav-link {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     color: #374151;
     text-decoration: none;
-    padding: 8px 0;
+    padding: 10px 0;
     transition: color 0.3s;
     background: white;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.mobile-nav-link:last-child {
+    border-bottom: none;
 }
 
 .mobile-nav-link:hover,
 .mobile-nav-link.active {
     color: #059669;
-}
-
-.header-back-btn {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.9);
-    border-radius: 50%;
-    border: none;
-    cursor: pointer;
-    font-size: 20px;
-    text-decoration: none;
-    color: #065f46;
 }
 
 .header-logo {
@@ -185,40 +178,7 @@
     color: #059669;
 }
 
-.header-favorite-btn {
-    background: white;
-    color: #059669;
-    padding: 8px 20px;
-    border-radius: 9999px;
-    transition: all 0.3s;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    position: relative;
-    z-index: 1001;
-}
-
-.header-favorite-count {
-    position: absolute;
-    top: -8px;
-    right: -8px;
-    background: #ef4444;
-    color: white;
-    font-size: 11px;
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-/* Для каталога — кнопка избранное только с сердцем */
+/* Кнопка избранное для каталога */
 .header-favorite-btn-icon-only {
     background: white;
     color: #059669;
@@ -278,13 +238,10 @@
         font-size: 24px;
     }
 
-    .header-favorite-btn {
-        padding: 6px 14px;
-        font-size: 12px;
-    }
-
-    .header-favorite-btn span:first-child {
-        font-size: 14px;
+    .header-favorite-btn-icon-only {
+        width: 40px;
+        height: 40px;
+        font-size: 22px;
     }
 }
 

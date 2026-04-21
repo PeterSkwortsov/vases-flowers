@@ -28,15 +28,49 @@ const ProductModal = {
         return this.product && this.favorites.includes(this.product.id);
     },
 
+    openZoom(imageSrc) {
+        // Создаём модалку для увеличенного изображения
+        const zoomModal = document.createElement('div');
+        zoomModal.className = 'zoom-modal';
+        zoomModal.innerHTML = `
+            <img src="${imageSrc}" alt="Увеличенное изображение" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
+            <button class="zoom-close">✕</button>
+        `;
+        document.body.appendChild(zoomModal);
+        document.body.style.overflow = 'hidden';
+
+        // Закрытие по клику
+        zoomModal.addEventListener('click', (e) => {
+            if (e.target === zoomModal || e.target.classList.contains('zoom-close')) {
+                zoomModal.remove();
+                document.body.style.overflow = '';
+            }
+        });
+
+        // Закрытие по Escape
+        const handleEscape = (e) => {
+            if (e.key === 'Escape') {
+                zoomModal.remove();
+                document.body.style.overflow = '';
+                document.removeEventListener('keydown', handleEscape);
+            }
+        };
+        document.addEventListener('keydown', handleEscape);
+    },
+
     render() {
         if (!this.product) return '';
 
         const hasMultipleImages = this.product.images && this.product.images.length > 1;
         const thumbnailsHtml = hasMultipleImages ? this.product.images.map((img, idx) => `
             <div class="modal-thumb ${idx === this.currentPhotoIndex ? 'active' : ''}" data-index="${idx}">
-                <img src="${img}" alt="Фото ${idx + 1}" onerror="this.src='https://placehold.co/200x200/e8f5e9/2e7d32?text=🌾'">
+                <img src="${img}" 
+                     alt="Фото ${idx + 1}" 
+                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
             </div>
         `).join('') : '';
+
+        const currentImage = this.product.images[this.currentPhotoIndex];
 
         return `
             <div class="product-modal" id="productModal">
@@ -49,8 +83,12 @@ const ProductModal = {
                     
                     <div class="modal-grid">
                         <div class="modal-gallery">
-                            <div class="modal-main-image">
-                                <img id="modalMainImage" src="${this.product.images[0]}" alt="${this.product.name}" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
+                            <div class="modal-main-image" id="modalMainImageContainer">
+                                <img id="modalMainImage" 
+                                     src="${currentImage}" 
+                                     alt="${this.product.name}" 
+                                     onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
+                                <button class="zoom-btn" id="zoomBtn">🔍</button>
                             </div>
                             ${hasMultipleImages ? `
                                 <div class="modal-thumbnails" id="modalThumbnails">
@@ -103,8 +141,25 @@ const ProductModal = {
         const buyBtn = document.getElementById('modalBuyBtn');
         const overlay = document.querySelector('.product-modal-overlay');
         const thumbnails = document.querySelectorAll('.modal-thumb');
+        const zoomBtn = document.getElementById('zoomBtn');
+        const mainImage = document.getElementById('modalMainImage');
 
-        // Закрытие по крестику
+        // Кнопка лупы
+        if (zoomBtn && mainImage) {
+            zoomBtn.onclick = (e) => {
+                e.stopPropagation();
+                this.openZoom(mainImage.src);
+            };
+        }
+
+        // Клик по изображению для увеличения
+        if (mainImage) {
+            mainImage.onclick = (e) => {
+                e.stopPropagation();
+                this.openZoom(mainImage.src);
+            };
+        }
+
         if (closeBtn) {
             closeBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -112,7 +167,6 @@ const ProductModal = {
             };
         }
 
-        // Закрытие по оверлею
         if (overlay) {
             overlay.onclick = (e) => {
                 e.stopPropagation();
@@ -120,14 +174,12 @@ const ProductModal = {
             };
         }
 
-        // Избранное
         if (favBtn) {
             favBtn.onclick = (e) => {
                 e.stopPropagation();
                 if (this.onFavoriteToggle && this.product) {
                     this.onFavoriteToggle(this.product.id);
                 }
-                // Обновляем кнопку
                 const btn = document.getElementById('modalFavoriteBtn');
                 if (btn) {
                     btn.innerHTML = this.isFavorite() ? '❤️' : '🤍';
@@ -135,7 +187,6 @@ const ProductModal = {
             };
         }
 
-        // Купить
         if (buyBtn) {
             buyBtn.onclick = (e) => {
                 e.stopPropagation();
@@ -145,16 +196,14 @@ const ProductModal = {
             };
         }
 
-        // Переключение фото по миниатюрам
         thumbnails.forEach(thumb => {
             thumb.onclick = (e) => {
                 e.stopPropagation();
                 this.currentPhotoIndex = parseInt(thumb.dataset.index);
-                const mainImage = document.getElementById('modalMainImage');
-                if (mainImage && this.product) {
-                    mainImage.src = this.product.images[this.currentPhotoIndex];
+                const mainImageEl = document.getElementById('modalMainImage');
+                if (mainImageEl && this.product) {
+                    mainImageEl.src = this.product.images[this.currentPhotoIndex];
                 }
-                // Обновляем активный класс
                 thumbnails.forEach((t, idx) => {
                     if (idx === this.currentPhotoIndex) {
                         t.classList.add('active');
@@ -165,7 +214,6 @@ const ProductModal = {
             };
         });
 
-        // Закрытие по Escape
         const handleEscape = (e) => {
             if (e.key === 'Escape' && this.onClose) {
                 this.onClose();

@@ -34,10 +34,7 @@ const Header = {
     },
 
     render() {
-        // Для каталога — кнопка избранное только с сердцем (без стрелки назад)
         const isCatalog = this.currentPage === 'catalog';
-
-        const backButton = isCatalog ? '' : ''; // Стрелка удалена
 
         const favoriteButton = isCatalog
             ? `<button id="favoritesBtn" class="header-favorite-btn-icon-only">
@@ -62,6 +59,7 @@ const Header = {
                     <a href="index.html" class="mobile-nav-link ${this.currentPage === 'index' ? 'active' : ''}">Главная</a>
                     <a href="catalog.html" class="mobile-nav-link ${this.currentPage === 'catalog' ? 'active' : ''}">Каталог</a>
                     <a href="index.html#masterclasses" class="mobile-nav-link">Мастер-классы</a>
+                    <a href="index.html#blog" class="mobile-nav-link">Блог</a>
                     <a href="index.html#contacts" class="mobile-nav-link">Контакты</a>
                 </nav>
             </div>
@@ -73,7 +71,6 @@ const Header = {
                     <div class="header-content">
                         <div class="header-left">
                             ${burgerMenu}
-                            ${backButton}
                             <a href="index.html" class="header-logo">
                                 <span class="header-logo-icon">🌾</span>
                                 <div>
@@ -87,6 +84,7 @@ const Header = {
                             <a href="index.html" class="header-nav-link ${this.currentPage === 'index' ? 'active' : ''}">Главная</a>
                             <a href="catalog.html" class="header-nav-link ${this.currentPage === 'catalog' ? 'active' : ''}">Каталог</a>
                             <a href="index.html#masterclasses" class="header-nav-link">Мастер-классы</a>
+                            <a href="index.html#blog" class="header-nav-link">Блог</a>
                             <a href="index.html#contacts" class="header-nav-link">Контакты</a>
                         </nav>
                         

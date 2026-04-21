@@ -251,10 +251,7 @@ document.addEventListener('DOMContentLoaded', () => {
         productsContainer.innerHTML = '<div class="container"><div class="products-grid"><div class="empty-state"><div class="empty-icon">🌿</div><h3 class="empty-title">Загрузка...</h3></div></div></div>';
     }
 
-    const featuresContainer = document.getElementById('features-container');
-    if (featuresContainer && Features && Features.render) {
-        featuresContainer.innerHTML = Features.render();
-    }
+    
 
     const footerContainer = document.getElementById('footer-container');
     if (footerContainer && Footer && Footer.render) {

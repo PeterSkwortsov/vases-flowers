@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="noindex, nofollow">
+    <title>Статья — Глиняный сад</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../components/Header.css">
+    <link rel="stylesheet" href="../components/Footer.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ecfeff 100%);
+            color: #1a2e2a;
+            line-height: 1.5;
+        }
+
+        .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 16px;
+            }
+        }
+
+        .blog-post-page {
+            padding: 140px 0 80px;
+            min-height: 100vh;
+        }
+
+        .back-to-blog {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #059669;
+            text-decoration: none;
+            margin-bottom: 32px;
+            font-size: 14px;
+        }
+
+        .back-to-blog:hover {
+            gap: 12px;
+        }
+
+        .blog-post-content {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+        }
+
+        .post-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #064e3b;
+            margin-bottom: 16px;
+        }
+
+        .post-meta {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 24px;
+        }
+
+        .post-image {
+            width: 100%;
+            border-radius: 16px;
+            margin-bottom: 32px;
+        }
+
+        .post-description {
+            font-size: 16px;
+            line-height: 1.7;
+            color: #374151;
+        }
+
+        /* Слайдер */
+        .post-slider-container {
+            position: relative;
+            margin: 30px 0;
+            border-radius: 20px;
+            overflow: hidden;
+        }
+
+        .post-slider {
+            display: flex;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .post-slider::-webkit-scrollbar {
+            display: none;
+        }
+
+        .post-slide {
+            flex-shrink: 0;
+            width: 100%;
+            scroll-snap-align: start;
+        }
+
+        .post-slide img {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+            border-radius: 20px;
+        }
+
+        .post-slider-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            color: #059669;
+            transition: all 0.3s;
+            z-index: 10;
+        }
+
+        .post-slider-btn:hover {
+            background: #059669;
+            color: white;
+        }
+
+        .post-slider-prev {
+            left: 20px;
+        }
+
+        .post-slider-next {
+            right: 20px;
+        }
+
+        .post-slider-dots {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        .post-slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #cbd5e1;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .post-slider-dot.active {
+            background: #059669;
+            width: 25px;
+            border-radius: 10px;
+        }
+
+        .post-action-btn {
+            display: inline-block;
+            background: #059669;
+            color: white;
+            padding: 14px 32px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+            margin-top: 30px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .post-action-btn:hover {
+            background: #047857;
+            transform: translateY(-2px);
+        }
+
+        @media (max-width: 768px) {
+            .blog-post-content {
+                padding: 24px;
+            }
+
+            .post-title {
+                font-size: 28px;
+            }
+
+            .post-slide img {
+                height: 250px;
+            }
+
+            .post-slider-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="header-container"></div>
+
+    <main class="blog-post-page">
+        <div class="container">
+            <a href="../index.html#blog" class="back-to-blog">← Назад к статьям</a>
+            <div class="blog-post-content" id="blogPostContent">
+                <div style="text-align: center; padding: 60px;">Загрузка статьи...</div>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-container"></div>
+
+    <script src="../components/Header.js"></script>
+    <script src="../components/Footer.js"></script>
+    <script src="blog-data.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            if (Header) {
+                Header.setCurrentPage('index');
+                const headerContainer = document.getElementById('header-container');
+                if (headerContainer) {
+                    headerContainer.innerHTML = Header.render();
+                    if (Header.bindEvents) Header.bindEvents();
+                }
+            }
+
+            if (Footer) {
+                const footerContainer = document.getElementById('footer-container');
+                if (footerContainer) {
+                    footerContainer.innerHTML = Footer.render();
+                }
+            }
+
+            const urlParams = new URLSearchParams(window.location.search);
+            const postId = urlParams.get('id');
+
+            console.log('Post ID:', postId);
+            console.log('BlogData:', BlogData);
+
+            if (postId && BlogData) {
+                const post = BlogData.find(p => p.id == postId);
+                console.log('Found post:', post);
+
+                if (post) {
+                    let currentSlide = 0;
+                    const images = post.images || [post.image];
+                    console.log('Images array:', images);
+
+                    let sliderHtml = '';
+                    let dotsHtml = '';
+
+                    if (images.length > 1) {
+                        sliderHtml = `
+                            <div class="post-slider-container">
+                                <div class="post-slider" id="postSlider">
+                                    ${images.map((img, idx) => `
+                                        <div class="post-slide" data-index="${idx}">
+                                            <img src="../${img}" alt="Фото ${idx + 1}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
+                                        </div>
+                                    `).join('')}
+                                </div>
+                                <button class="post-slider-btn post-slider-prev" id="sliderPrev">‹</button>
+                                <button class="post-slider-btn post-slider-next" id="sliderNext">›</button>
+                                <div class="post-slider-dots" id="sliderDots">
+                                    ${images.map((_, idx) => `<div class="post-slider-dot ${idx === 0 ? 'active' : ''}" data-index="${idx}"></div>`).join('')}
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        sliderHtml = `<img src="../${post.image}" alt="${post.title}" class="post-image" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">`;
+                    }
+
+                    document.getElementById('blogPostContent').innerHTML = `
+                        <h1 class="post-title">${post.title}</h1>
+                        <div class="post-meta">${post.date} • ${post.category}</div>
+                        ${sliderHtml}
+                        <div class="post-description">
+                            <p>${(post.fullDescription || post.description).replace(/\n/g, '<br>')}</p>
+                        </div>
+                        <div style="text-align: center;">
+                            <button class="post-action-btn" id="actionBtn">Узнать подробнее →</button>
+                        </div>
+                    `;
+
+                    document.title = `${post.title} — Глиняный сад`;
+
+                    const actionBtn = document.getElementById('actionBtn');
+                    if (actionBtn) {
+                        actionBtn.addEventListener('click', () => {
+                            alert('Спасибо за интерес! Скоро мы свяжемся с вами.');
+                        });
+                    }
+
+                    if (images.length > 1) {
+                        const slider = document.getElementById('postSlider');
+                        const prevBtn = document.getElementById('sliderPrev');
+                        const nextBtn = document.getElementById('sliderNext');
+                        const dots = document.querySelectorAll('.post-slider-dot');
+
+                        function updateSlider() {
+                            if (slider) {
+                                const slideWidth = slider.clientWidth;
+                                slider.scrollTo({ left: currentSlide * slideWidth, behavior: 'smooth' });
+                            }
+                            dots.forEach((dot, idx) => {
+                                if (idx === currentSlide) {
+                                    dot.classList.add('active');
+                                } else {
+                                    dot.classList.remove('active');
+                                }
+                            });
+                        }
+
+                        if (prevBtn) {
+                            prevBtn.addEventListener('click', () => {
+                                if (currentSlide > 0) {
+                                    currentSlide--;
+                                    updateSlider();
+                                }
+                            });
+                        }
+
+                        if (nextBtn) {
+                            nextBtn.addEventListener('click', () => {
+                                if (currentSlide < images.length - 1) {
+                                    currentSlide++;
+                                    updateSlider();
+                                }
+                            });
+                        }
+
+                        dots.forEach((dot, idx) => {
+                            dot.addEventListener('click', () => {
+                                currentSlide = idx;
+                                updateSlider();
+                            });
+                        });
+
+                        if (slider) {
+                            slider.addEventListener('scroll', () => {
+                                const slideWidth = slider.clientWidth;
+                                const newIndex = Math.round(slider.scrollLeft / slideWidth);
+                                if (newIndex !== currentSlide && newIndex >= 0 && newIndex < images.length) {
+                                    currentSlide = newIndex;
+                                    dots.forEach((dot, idx) => {
+                                        if (idx === currentSlide) {
+                                            dot.classList.add('active');
+                                        } else {
+                                            dot.classList.remove('active');
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                } else {
+                    document.getElementById('blogPostContent').innerHTML = '<p style="text-align: center;">Статья не найдена</p>';
+                }
+            } else {
+                document.getElementById('blogPostContent').innerHTML = '<p style="text-align: center;">Статья не найдена</p>';
+            }
+        });
+    </script>
+</body>
+
+</html>

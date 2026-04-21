@@ -18,7 +18,7 @@ const StoriesModal = {
                 'Сезонные новинки', 'Эксклюзивные букеты', 'Подарок с душой'
             ],
             'packaging': [
-                'Тест', 'Крафт бумага', 'Натуральные материалы',
+                'Эко-упаковка', 'Крафт бумага', 'Натуральные материалы',
                 'Льняные ленты', 'Джутовые верёвки', 'Бумага ручной работы',
                 'Сухоцветы в упаковке', 'Подарочный набор', 'Эстетичная подача',
                 'Экологичная упаковка', 'Стильное оформление', 'Подарок готовый'
@@ -75,7 +75,9 @@ const StoriesModal = {
                     </div>
                     <div class="stories-content" id="storiesContent">
                         <div class="story-slide active">
-                            <img src="${story.image}" alt="${story.title}" onerror="this.src='https://placehold.co/600x800/e8f5e9/2e7d32?text=🌾'">
+                            <img src="${story.image}" 
+                                 alt="${story.title}" 
+                                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                             <div class="story-caption">
                                 <h3>${story.title}</h3>
                                 <p>${story.description}</p>
@@ -153,7 +155,9 @@ const StoriesModal = {
         if (contentDiv) {
             contentDiv.innerHTML = `
                 <div class="story-slide active">
-                    <img src="${story.image}" alt="${story.title}" onerror="this.src='https://placehold.co/600x800/e8f5e9/2e7d32?text=🌾'">
+                    <img src="${story.image}" 
+                         alt="${story.title}" 
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                     <div class="story-caption">
                         <h3>${story.title}</h3>
                         <p>${story.description}</p>
