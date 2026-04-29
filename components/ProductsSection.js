@@ -1,6 +1,7 @@
 const ProductsSection = {
     products: [],
     onProductClick: null,
+    onARPreview: null,
 
     setData(products) {
         this.products = products.slice(0, 8);
@@ -8,6 +9,10 @@ const ProductsSection = {
 
     setOnProductClick(callback) {
         this.onProductClick = callback;
+    },
+
+    setOnARPreview(callback) {
+        this.onARPreview = callback;
     },
 
     render() {
@@ -25,6 +30,8 @@ const ProductsSection = {
                         <span>${product.packagingIcon}</span>
                         <span>${product.packagingName}</span>
                     </div>
+                    <!-- Кнопка AR Preview -->
+                    <button class="ar-preview-btn" data-id="${product.id}" title="Примерка в интерьере">📷</button>
                 </div>
                 <div class="product-info">
                     <h3 class="product-name">${product.name}</h3>
@@ -90,6 +97,13 @@ const ProductsSection = {
                 if (e.target.classList.contains('product-detail-btn')) {
                     const id = parseInt(e.target.dataset.id);
                     if (this.onProductClick) this.onProductClick(id);
+                } else if (e.target.classList.contains('ar-preview-btn')) {
+                    e.stopPropagation();
+                    const id = parseInt(e.target.dataset.id);
+                    const product = this.products.find(p => p.id === id);
+                    if (product && this.onARPreview) {
+                        this.onARPreview(product);
+                    }
                 } else {
                     const id = parseInt(card.dataset.id);
                     if (this.onProductClick) this.onProductClick(id);

@@ -1,0 +1,519 @@
+/* AR Preview Modal */
+.ar-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 10000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.ar-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.85);
+    backdrop-filter: blur(8px);
+    z-index: 10001;
+}
+
+.ar-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 28px;
+    max-width: 550px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    z-index: 10002;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+}
+
+/* Header */
+.ar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 18px 24px;
+    border-bottom: 1px solid #e5e7eb;
+    position: sticky;
+    top: 0;
+    background: white;
+    z-index: 10;
+    border-radius: 28px 28px 0 0;
+}
+
+.ar-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: #064e3b;
+    margin: 0;
+}
+
+.ar-close {
+    background: #f3f4f6;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ar-close:hover {
+    background: #e5e7eb;
+    transform: scale(1.05);
+}
+
+/* Секция избранного */
+.ar-favorites-section {
+    padding: 16px 20px;
+    background: #f9fafb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ar-favorites-title {
+    font-size: 12px;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 12px;
+}
+
+.ar-favorites-list {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scrollbar-width: thin;
+}
+
+.ar-favorites-list::-webkit-scrollbar {
+    height: 4px;
+}
+
+.ar-favorites-list::-webkit-scrollbar-track {
+    background: #e5e7eb;
+    border-radius: 10px;
+}
+
+.ar-favorites-list::-webkit-scrollbar-thumb {
+    background: #059669;
+    border-radius: 10px;
+}
+
+.ar-favorite-item {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    background: white;
+    border-radius: 14px;
+    cursor: pointer;
+    transition: all 0.3s;
+    border: 2px solid transparent;
+    min-width: 160px;
+}
+
+.ar-favorite-item.active {
+    border-color: #059669;
+    background: #ecfdf5;
+}
+
+.ar-favorite-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.ar-favorite-img {
+    width: 50px;
+    height: 50px;
+    object-fit: cover;
+    border-radius: 10px;
+}
+
+.ar-favorite-info {
+    text-align: left;
+}
+
+.ar-favorite-name {
+    font-size: 13px;
+    font-weight: 600;
+    color: #1f2937;
+    margin-bottom: 2px;
+}
+
+.ar-favorite-price {
+    font-size: 12px;
+    color: #059669;
+    font-weight: 500;
+}
+
+.ar-no-favorites {
+    text-align: center;
+    padding: 20px;
+    color: #6b7280;
+    font-size: 14px;
+    background: #f9fafb;
+    border-radius: 12px;
+}
+
+/* Вкладки */
+.ar-tabs {
+    display: flex;
+    padding: 0 20px;
+    gap: 10px;
+    border-bottom: 1px solid #e5e7eb;
+    background: white;
+}
+
+.ar-tab {
+    flex: 1;
+    padding: 14px 12px;
+    background: none;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ar-tab.active {
+    color: #059669;
+    border-bottom: 2px solid #059669;
+}
+
+.ar-tab-content {
+    display: none;
+    padding: 20px;
+}
+
+.ar-tab-content.active {
+    display: block;
+}
+
+/* Контейнер камеры и загруженного фото */
+.ar-camera-container,
+.ar-upload-container {
+    position: relative;
+}
+
+.ar-overlay-container {
+    position: relative;
+    width: 100%;
+    background: #1f2937;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: crosshair;
+    min-height: 400px;
+}
+
+.ar-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    transform: scaleX(-1);
+}
+
+.ar-interior-image {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: 16px;
+}
+
+.ar-overlay-image {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    width: 60px;
+    height: 60px;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 12px;
+    padding: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    transition: transform 0.3s;
+    z-index: 15;
+}
+
+.ar-overlay-image:hover {
+    transform: scale(1.05);
+}
+
+/* Размещённые изображения */
+.ar-image-wrapper {
+    position: absolute;
+    cursor: grab;
+    user-select: none;
+    z-index: 20;
+    transition: none;
+}
+
+.ar-image-wrapper:active {
+    cursor: grabbing;
+}
+
+.ar-placed-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    pointer-events: none;
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
+    transition: filter 0.2s;
+}
+
+.ar-placed-image:hover {
+    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35));
+}
+
+/* Кнопка удаления */
+.ar-delete-btn {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    width: 26px;
+    height: 26px;
+    background: #ef4444;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    z-index: 25;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+    transition: transform 0.2s, background 0.2s;
+}
+
+.ar-delete-btn:hover {
+    background: #dc2626;
+    transform: scale(1.05);
+}
+
+/* Кнопка изменения размера */
+.ar-resize-handle {
+    position: absolute;
+    bottom: -10px;
+    right: -10px;
+    width: 28px;
+    height: 28px;
+    background: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: nw-resize;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    font-size: 14px;
+    z-index: 25;
+    transition: transform 0.1s;
+}
+
+.ar-resize-handle:active {
+    transform: scale(1.1);
+}
+
+/* Инструкция */
+.ar-instruction {
+    margin-top: 16px;
+    padding: 12px;
+    background: #f9fafb;
+    border-radius: 14px;
+    text-align: center;
+}
+
+.ar-instruction p {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 4px 0;
+}
+
+/* Площадка загрузки фото */
+.ar-upload-area {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f9fafb;
+    border-radius: 20px;
+    border: 2px dashed #e5e7eb;
+    margin-bottom: 16px;
+}
+
+.ar-upload-btn {
+    background: #059669;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 40px;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ar-upload-btn:hover {
+    background: #047857;
+    transform: translateY(-2px);
+}
+
+.ar-upload-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.ar-upload-instruction {
+    margin-top: 16px;
+}
+
+/* Footer */
+.ar-footer {
+    padding: 16px 24px;
+    display: flex;
+    gap: 12px;
+    border-top: 1px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ar-start-btn,
+.ar-stop-btn {
+    flex: 1;
+    padding: 12px;
+    border-radius: 40px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ar-start-btn {
+    background: #059669;
+    color: white;
+    border: none;
+}
+
+.ar-start-btn:hover {
+    background: #047857;
+    transform: translateY(-2px);
+}
+
+.ar-stop-btn {
+    background: #ef4444;
+    color: white;
+    border: none;
+}
+
+.ar-stop-btn:hover {
+    background: #dc2626;
+    transform: translateY(-2px);
+}
+
+/* Выбранная композиция */
+.ar-selected {
+    padding: 16px 24px;
+    background: #f9fafb;
+    border-radius: 0 0 28px 28px;
+    font-size: 14px;
+    color: #6b7280;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.ar-selected-name {
+    font-weight: 600;
+    color: #059669;
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .ar-modal {
+        padding: 8px;
+    }
+
+    .ar-modal-content {
+        max-width: 100%;
+        max-height: 95vh;
+    }
+
+    .ar-header {
+        padding: 14px 18px;
+    }
+
+    .ar-title {
+        font-size: 18px;
+    }
+
+    .ar-favorite-item {
+        min-width: 140px;
+        padding: 6px 10px;
+    }
+
+    .ar-favorite-img {
+        width: 40px;
+        height: 40px;
+    }
+
+    .ar-favorite-name {
+        font-size: 12px;
+    }
+
+    .ar-favorite-price {
+        font-size: 11px;
+    }
+
+    .ar-overlay-container {
+        min-height: 350px;
+    }
+
+    .ar-instruction p {
+        font-size: 10px;
+    }
+
+    .ar-start-btn,
+    .ar-stop-btn {
+        padding: 10px;
+        font-size: 13px;
+    }
+
+    .ar-selected {
+        font-size: 12px;
+        padding: 12px 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .ar-overlay-container {
+        min-height: 280px;
+    }
+
+    .ar-tab {
+        padding: 10px 8px;
+        font-size: 12px;
+    }
+
+    .ar-favorites-section {
+        padding: 12px 16px;
+    }
+
+    .ar-tab-content {
+        padding: 16px;
+    }
+}

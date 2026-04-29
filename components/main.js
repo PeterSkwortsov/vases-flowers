@@ -3,17 +3,26 @@ document.addEventListener('DOMContentLoaded', () => {
     // Состояние для избранного на главной странице
     let favorites = [];
 
+    // Функция для обновления ARPreview (если компонент загружен)
+    function updateARPreview() {
+        if (typeof ARPreview !== 'undefined' && ARPreview && ARPreview.updateFavorites) {
+            ARPreview.updateFavorites(favorites, productsData);
+        }
+    }
+
     // Загрузка избранного из localStorage
     function loadFavorites() {
         const saved = localStorage.getItem('favorites');
         if (saved) {
             favorites = JSON.parse(saved);
         }
+        updateARPreview();
         updateFavoritesUI();
     }
 
     function saveFavorites() {
         localStorage.setItem('favorites', JSON.stringify(favorites));
+        updateARPreview();
         updateFavoritesUI();
     }
 
@@ -25,15 +34,10 @@ document.addEventListener('DOMContentLoaded', () => {
             favorites.splice(index, 1);
         }
         saveFavorites();
-        // Обновляем отображение сердечка в модалке, если она открыта
         if (ProductModal && ProductModal.product && ProductModal.product.id === productId) {
             ProductModal.setData(ProductModal.product, favorites);
             ProductModal.rerender();
         }
-    }
-
-    function isFavorite(productId) {
-        return favorites.includes(productId);
     }
 
     function updateFavoritesUI() {
@@ -89,7 +93,13 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Рендер ProductsSection (8 товаров)
+    // Рендер Process (блок о процессе создания)
+    const processContainer = document.getElementById('process-container');
+    if (processContainer && Process && Process.render) {
+        processContainer.innerHTML = Process.render();
+    }
+
+    // Рендер ProductsSection (товары)
     const productsContainer = document.getElementById('products-container');
     if (productsContainer && ProductsSection && ProductsSection.render) {
         ProductsSection.setData(productsData);
@@ -100,30 +110,35 @@ document.addEventListener('DOMContentLoaded', () => {
                 ProductModal.show();
             }
         });
+
+        // Добавляем обработчик для ARPreview из карточек товаров
+        ProductsSection.setOnARPreview((product) => {
+            if (typeof ARPreview !== 'undefined' && ARPreview) {
+                updateARPreview();
+                ARPreview.selectProduct(product);
+                ARPreview.show();
+            }
+        });
+
         productsContainer.innerHTML = ProductsSection.render();
         ProductsSection.bindEvents();
     }
 
-    // Рендер Masterclasses (обновлённые данные)
+    // Рендер Masterclasses
     const masterclassesContainer = document.getElementById('masterclasses-container');
     if (masterclassesContainer && Masterclasses && Masterclasses.render) {
-        // Передаём данные мастер-классов (они будут обновлены внутри компонента)
         Masterclasses.setData(masterClassesData);
         masterclassesContainer.innerHTML = Masterclasses.render();
         Masterclasses.bindEvents();
     }
 
-    // Рендер Blog (новый блок)
+    // Рендер Blog
     const blogContainer = document.getElementById('blog-container');
     if (blogContainer && Blog && Blog.render) {
-        // Проверяем, что BlogData существует
         if (typeof BlogData !== 'undefined') {
             Blog.setData(BlogData);
             blogContainer.innerHTML = Blog.render();
             Blog.bindEvents();
-        } else {
-            console.warn('BlogData не загружен');
-            blogContainer.innerHTML = '<div class="container" style="padding: 60px 0; text-align: center;"><p>Загрузка статей...</p></div>';
         }
     }
 
@@ -133,24 +148,30 @@ document.addEventListener('DOMContentLoaded', () => {
         aboutContainer.innerHTML = About.render();
     }
 
-    // Рендер Features
-  
-
-    // Рендер Process (блок о процессе создания)
-    const processContainer = document.getElementById('process-container');
-    if (processContainer && Process && Process.render) {
-        processContainer.innerHTML = Process.render();
-    }
-   
-
     // Рендер Footer
     const footerContainer = document.getElementById('footer-container');
     if (footerContainer && Footer && Footer.render) {
         footerContainer.innerHTML = Footer.render();
     }
 
+    // ARPreview настройка
+    if (typeof ARPreview !== 'undefined' && ARPreview) {
+        ARPreview.setOnClose(() => {
+            // Ничего дополнительного не делаем
+        });
+    }
+
     // Загрузка избранного
     loadFavorites();
+
+    // Закрытие модалок по Escape
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            if (ProductModal) ProductModal.hide();
+            if (StoriesModal) StoriesModal.hide();
+            if (typeof ARPreview !== 'undefined' && ARPreview) ARPreview.hide();
+        }
+    });
 
     // Плавная прокрутка для якорных ссылок
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {

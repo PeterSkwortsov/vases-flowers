@@ -276,3 +276,41 @@
         height: 260px;
     }
 }
+
+
+/* Кнопка AR Preview */
+.ar-preview-btn {
+    position: absolute;
+    bottom: 16px;
+    right: 16px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s;
+    z-index: 10;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ar-preview-btn:hover {
+    background: #059669;
+    color: white;
+    transform: scale(1.05);
+}
+
+/* Для мобильных устройств */
+@media (max-width: 768px) {
+    .ar-preview-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 18px;
+        bottom: 12px;
+        right: 12px;
+    }
+}

@@ -3,6 +3,7 @@ const ProductCard = {
     favorites: [],
     onProductClick: null,
     onFavoriteToggle: null,
+    onARPreview: null,
 
     setData(products, favorites) {
         this.products = products;
@@ -17,6 +18,10 @@ const ProductCard = {
         this.onFavoriteToggle = callback;
     },
 
+    setOnARPreview(callback) {
+        this.onARPreview = callback;
+    },
+
     render() {
         if (!this.products.length) {
             return `<div class="container"><div class="products-grid"></div></div>`;
@@ -25,10 +30,15 @@ const ProductCard = {
         const productsHtml = this.products.map(product => `
             <div class="product-card" data-id="${product.id}">
                 <div class="product-image-wrapper">
-                    <img src="${product.images[0]}" alt="${product.name}" class="product-image" onerror="this.src='https://placehold.co/600x600/e8f5e9/2e7d32?text=🌾'">
+                    <img src="${product.images[0]}" 
+                         alt="${product.name}" 
+                         class="product-image" 
+                         onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                     <button class="product-favorite-btn" data-id="${product.id}">
                         ${this.favorites.includes(product.id) ? '❤️' : '🤍'}
                     </button>
+                    <!-- Кнопка AR Preview -->
+                    <button class="ar-preview-btn" data-id="${product.id}" data-image="${product.images[0]}" data-name="${product.name}" title="Примерка в интерьере">📷</button>
                     <div class="product-badge">${product.category}</div>
                     <div class="product-packaging">
                         <span>${product.packagingIcon}</span>
@@ -56,6 +66,7 @@ const ProductCard = {
     },
 
     renderEmpty(resetCallback) {
+        this.onFilterReset = resetCallback;
         return `
             <div class="container">
                 <div class="products-grid">
@@ -90,7 +101,9 @@ const ProductCard = {
             this._handleCardClick = (e) => {
                 if (e.target.classList.contains('detail-btn') ||
                     e.target.classList.contains('product-favorite-btn') ||
-                    e.target.parentElement?.classList.contains('product-favorite-btn')) {
+                    e.target.classList.contains('ar-preview-btn') ||
+                    e.target.parentElement?.classList?.contains('product-favorite-btn') ||
+                    e.target.parentElement?.classList?.contains('ar-preview-btn')) {
                     return;
                 }
                 const id = parseInt(card.dataset.id);
@@ -107,8 +120,29 @@ const ProductCard = {
                 e.stopPropagation();
                 const id = parseInt(btn.dataset.id);
                 if (this.onFavoriteToggle) this.onFavoriteToggle(id);
+                // Обновляем иконку сразу
+                if (this.favorites.includes(id)) {
+                    btn.innerHTML = '🤍';
+                } else {
+                    btn.innerHTML = '❤️';
+                }
             };
             btn.addEventListener('click', this._handleFavoriteClick);
+        });
+
+        // Кнопки AR Preview
+        const arBtns = document.querySelectorAll('.ar-preview-btn');
+        arBtns.forEach(btn => {
+            btn.removeEventListener('click', this._handleARClick);
+            this._handleARClick = (e) => {
+                e.stopPropagation();
+                const id = parseInt(btn.dataset.id);
+                const product = this.products.find(p => p.id === id);
+                if (product && this.onARPreview) {
+                    this.onARPreview(product);
+                }
+            };
+            btn.addEventListener('click', this._handleARClick);
         });
     },
 
@@ -120,7 +154,7 @@ const ProductCard = {
             if (products.length === 0) {
                 container.innerHTML = this.renderEmpty();
                 const resetBtn = document.getElementById('resetFiltersBtn');
-                if (resetBtn && this.onFavoriteToggle) {
+                if (resetBtn && this.onFilterReset) {
                     resetBtn.addEventListener('click', () => {
                         if (this.onFilterReset) this.onFilterReset();
                     });

@@ -1,0 +1,221 @@
+<!-- ar-preview/ar-demo.html - Демо страница для тестирования -->
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AR Preview Demo - Глиняный сад</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Montserrat:wght@300;400;500;600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="ar-preview.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #ecfdf5 0%, #f0fdfa 50%, #ecfeff 100%);
+            padding: 100px 20px 60px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .demo-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .demo-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 36px;
+            color: #064e3b;
+            margin-bottom: 16px;
+        }
+
+        .demo-header p {
+            color: #6b7280;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 30px;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.12);
+        }
+
+        .product-image-wrapper {
+            position: relative;
+            height: 280px;
+            overflow: hidden;
+            background: linear-gradient(135deg, #d1fae5, #ccfbf1);
+        }
+
+        .product-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .product-info {
+            padding: 20px;
+        }
+
+        .product-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .product-price {
+            font-size: 22px;
+            font-weight: 300;
+            color: #047857;
+        }
+
+        .demo-note {
+            margin-top: 40px;
+            padding: 20px;
+            background: #fef3c7;
+            border-radius: 16px;
+            text-align: center;
+        }
+
+        .demo-note p {
+            color: #92400e;
+        }
+
+        .ar-preview-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 2000;
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="demo-header">
+            <h1>📷 Примерка в интерьере</h1>
+            <p>Выберите композицию и нажмите на кнопку с камерой 📷</p>
+        </div>
+
+        <div class="products-grid" id="productsGrid">
+            <!-- Товары будут загружены -->
+        </div>
+
+        <div class="demo-note">
+            <p>💡 Совет: Для лучшего результата используйте заднюю камеру телефона и хорошее освещение</p>
+            <p>📱 Наведите камеру на место в интерьере → Кликните по экрану → Композиция появится на выбранном месте</p>
+            <p>🗑️ Нажмите на размещённое изображение, чтобы удалить его</p>
+        </div>
+    </div>
+
+    <div id="ar-preview-container" class="ar-preview-container"></div>
+
+    <script src="ar-preview.js"></script>
+    <script>
+        // Демо данные
+        const demoProducts = [
+            {
+                id: 1,
+                name: "Лавандовое поле",
+                price: 2900,
+                images: ["../images/1.jpeg", "../images/2.jpeg", "../images/3.jpeg"],
+                category: "Букеты"
+            },
+            {
+                id: 2,
+                name: "Осенний вальс",
+                price: 3500,
+                images: ["../images/4.jpeg", "../images/5.jpeg", "../images/6.jpeg"],
+                category: "Композиции"
+            },
+            {
+                id: 3,
+                name: "Небесная лазурь",
+                price: 4200,
+                images: ["../images/10.jpeg", "../images/11.jpeg", "../images/12.jpeg"],
+                category: "Букеты"
+            }
+        ];
+
+        // Рендер товаров
+        function renderProducts() {
+            const grid = document.getElementById('productsGrid');
+            grid.innerHTML = demoProducts.map(product => `
+                <div class="product-card" data-id="${product.id}">
+                    <div class="product-image-wrapper">
+                        <img src="${product.images[0]}" alt="${product.name}" class="product-image">
+                        <button class="ar-card-btn" data-id="${product.id}">📷</button>
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-name">${product.name}</h3>
+                        <div class="product-price">${product.price} ₽</div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Добавляем обработчики для кнопок AR
+            document.querySelectorAll('.ar-card-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    const productId = parseInt(btn.dataset.id);
+                    const product = demoProducts.find(p => p.id === productId);
+                    if (product) {
+                        ARPreview.selectProduct(product);
+                        ARPreview.show();
+                    }
+                });
+            });
+        }
+
+        renderProducts();
+
+        // Настройка закрытия ARPreview
+        ARPreview.setOnClose(() => {
+            const container = document.getElementById('ar-preview-container');
+            if (container) {
+                container.style.display = 'none';
+            }
+        });
+
+        // Переопределяем show для отображения контейнера
+        const originalShow = ARPreview.show;
+        ARPreview.show = function () {
+            const container = document.getElementById('ar-preview-container');
+            if (container) {
+                container.style.display = 'block';
+            }
+            originalShow.call(this);
+        };
+    </script>
+</body>
+
+</html>
