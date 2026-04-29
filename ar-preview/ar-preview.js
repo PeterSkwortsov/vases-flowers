@@ -1,12 +1,27 @@
 const ARPreview = {
-    stream: null,
     currentImage: null,
     currentProduct: null,
-    video: null,
-    isActive: false,
     onClose: null,
     interiorImage: null,
     favorites: [],
+    placedImages: [],
+    calibrationMode: false,
+    calibrationPoints: [],
+    selectedObject: null,
+    pixelPerCm: null,
+    isCalibrated: false,
+
+    // Стандартные объекты для калибровки
+    calibrationObjects: {
+        door: { name: 'Дверь', sizeCm: 200, icon: '🚪' },
+        chair: { name: 'Стул', sizeCm: 45, icon: '🪑' },
+        table: { name: 'Стол', sizeCm: 75, icon: '🪑' },
+        sofa: { name: 'Диван (сиденье)', sizeCm: 45, icon: '🛋️' },
+        person: { name: 'Человек', sizeCm: 170, icon: '🧑' },
+        fridge: { name: 'Холодильник', sizeCm: 180, icon: '🧊' },
+        socket: { name: 'Розетка', sizeCm: 8, icon: '🔌' },
+        custom: { name: 'Свой размер', sizeCm: null, icon: '📏' }
+    },
 
     setOnClose(callback) {
         this.onClose = callback;
@@ -21,11 +36,12 @@ const ARPreview = {
         if (favoritesListElement) {
             if (this.favorites.length > 0) {
                 favoritesListElement.innerHTML = this.favorites.map(product => `
-                    <div class="ar-favorite-item" data-id="${product.id}" data-image="${product.images[0]}" data-name="${product.name}">
+                    <div class="ar-favorite-item" data-id="${product.id}" data-image="${product.images[0]}" data-name="${product.name}" data-height="${product.heightCm || 45}" data-width="${product.widthCm || 35}">
                         <img src="${product.images[0]}" alt="${product.name}" class="ar-favorite-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                         <div class="ar-favorite-info">
                             <div class="ar-favorite-name">${product.name}</div>
                             <div class="ar-favorite-price">${product.price} ₽</div>
+                            <div class="ar-favorite-size">${product.heightCm || 45} см</div>
                         </div>
                     </div>
                 `).join('');
@@ -36,17 +52,28 @@ const ARPreview = {
                         const id = parseInt(item.dataset.id);
                         const image = item.dataset.image;
                         const name = item.dataset.name;
+                        const height = parseInt(item.dataset.height) || 45;
+                        const width = parseInt(item.dataset.width) || 35;
 
                         items.forEach(fi => fi.classList.remove('active'));
                         item.classList.add('active');
 
                         this.currentImage = image;
-                        this.currentProduct = { id, name, images: [image] };
-                        this.setImage(image);
+                        this.currentProduct = {
+                            id,
+                            name,
+                            images: [image],
+                            heightCm: height,
+                            widthCm: width
+                        };
+                        this.setPreviewImage(image);
+
+                        // Логируем для проверки
+                        console.log('Выбран товар:', this.currentProduct);
 
                         const selectedName = document.getElementById('arSelectedName');
                         if (selectedName) {
-                            selectedName.textContent = name;
+                            selectedName.textContent = `${name} (${height} см)`;
                             selectedName.style.color = '#059669';
                         }
                     };
@@ -57,44 +84,12 @@ const ARPreview = {
         }
     },
 
-    async startCamera() {
-        try {
-            this.stream = await navigator.mediaDevices.getUserMedia({
-                video: { facingMode: 'environment' }
-            });
-
-            const videoElement = document.getElementById('arVideo');
-            if (videoElement) {
-                videoElement.srcObject = this.stream;
-                videoElement.play();
-                this.video = videoElement;
-                this.isActive = true;
-            }
-        } catch (err) {
-            console.error('Ошибка доступа к камере:', err);
-            alert('Не удалось получить доступ к камере. Пожалуйста, разрешите доступ.');
-        }
-    },
-
-    stopCamera() {
-        if (this.stream) {
-            this.stream.getTracks().forEach(track => track.stop());
-            this.stream = null;
-        }
-        this.isActive = false;
-    },
-
-    setImage(imageUrl) {
+    setPreviewImage(imageUrl) {
         this.currentImage = imageUrl;
-        const imgElement = document.getElementById('arOverlayImage');
-        const uploadImgElement = document.getElementById('arUploadOverlayImage');
-        if (imgElement && imageUrl) {
-            imgElement.src = imageUrl;
-            imgElement.style.display = 'block';
-        }
-        if (uploadImgElement && imageUrl) {
-            uploadImgElement.src = imageUrl;
-            uploadImgElement.style.display = 'block';
+        const previewImg = document.getElementById('arPreviewImage');
+        if (previewImg && imageUrl) {
+            previewImg.src = imageUrl;
+            previewImg.style.display = 'block';
         }
     },
 
@@ -113,11 +108,16 @@ const ARPreview = {
             const reader = new FileReader();
             reader.onload = (e) => {
                 this.interiorImage = e.target.result;
-                const imgElement = document.getElementById('arInteriorImage');
-                if (imgElement) {
-                    imgElement.src = this.interiorImage;
-                    imgElement.style.display = 'block';
+                const interiorImg = document.getElementById('arInteriorImage');
+                if (interiorImg) {
+                    interiorImg.src = this.interiorImage;
+                    interiorImg.style.display = 'block';
+
+                    // Сбрасываем калибровку
+                    this.resetCalibration();
                 }
+                const container = document.getElementById('arUploadOverlayContainer');
+                if (container) container.style.display = 'block';
                 resolve(this.interiorImage);
             };
             reader.onerror = () => reject('Ошибка загрузки файла');
@@ -125,69 +125,212 @@ const ARPreview = {
         });
     },
 
-    placeImageWithScale(event) {
-        if (!this.currentImage) {
-            alert('Сначала выберите композицию из избранного (нажмите на сердечко в карточке товара)');
-            return;
+    // Калибровка
+    startCalibration(objectId) {
+        this.selectedObject = this.calibrationObjects[objectId];
+        if (!this.selectedObject) return;
+
+        this.calibrationMode = true;
+        this.calibrationPoints = [];
+
+        const interiorImg = document.getElementById('arInteriorImage');
+        if (interiorImg) {
+            interiorImg.style.cursor = 'crosshair';
+
+            // Временно отключаем размещение композиций
+            interiorImg.onclick = (event) => this.handleCalibrationClick(event);
         }
 
-        const container = document.getElementById('arOverlayContainer');
-        if (!container) return;
+        const message = `📏 Отметьте ${this.selectedObject.name} на фото (2 клика: начало и конец)`;
+        this.showCalibrationMessage(message);
+    },
 
-        const containerRect = container.getBoundingClientRect();
+    handleCalibrationClick(event) {
+        if (!this.calibrationMode) return;
+
+        const interiorImg = document.getElementById('arInteriorImage');
+        const imgRect = interiorImg.getBoundingClientRect();
 
         let x, y;
         if (event.touches) {
             const touch = event.touches[0];
-            x = touch.clientX - containerRect.left;
-            y = touch.clientY - containerRect.top;
+            x = touch.clientX - imgRect.left;
+            y = touch.clientY - imgRect.top;
         } else {
-            x = event.clientX - containerRect.left;
-            y = event.clientY - containerRect.top;
+            x = event.clientX - imgRect.left;
+            y = event.clientY - imgRect.top;
         }
 
-        x = Math.min(Math.max(x, 20), containerRect.width - 20);
-        y = Math.min(Math.max(y, 20), containerRect.height - 20);
+        x = Math.min(Math.max(x, 0), imgRect.width);
+        y = Math.min(Math.max(y, 0), imgRect.height);
 
-        this.createPlaceableImage(x, y, container);
+        this.calibrationPoints.push({ x, y });
+
+        // Рисуем маркер на изображении
+        this.drawCalibrationMarker(x, y);
+
+        if (this.calibrationPoints.length === 2) {
+            // Рассчитываем масштаб
+            const points = this.calibrationPoints;
+            const distancePx = Math.sqrt(Math.pow(points[1].x - points[0].x, 2) + Math.pow(points[1].y - points[0].y, 2));
+            const sizeCm = this.selectedObject.sizeCm;
+
+            if (sizeCm && distancePx > 0) {
+                this.pixelPerCm = distancePx / sizeCm;
+                this.isCalibrated = true;
+
+                console.log(`✅ Калибровка: ${distancePx}px / ${sizeCm}см = ${this.pixelPerCm} px/см`);
+
+                this.showCalibrationMessage(`✅ Калибровка завершена! 1 см = ${Math.round(this.pixelPerCm * 10) / 10} пикселей. Теперь можно размещать композиции в реальном масштабе.`);
+                setTimeout(() => this.hideCalibrationMessage(), 3000);
+            } else if (!sizeCm && this.selectedObject.name === 'Свой размер') {
+                // Запрашиваем свой размер
+                const customSize = prompt('Введите размер объекта в сантиметрах:');
+                if (customSize && !isNaN(customSize)) {
+                    this.pixelPerCm = distancePx / parseFloat(customSize);
+                    this.isCalibrated = true;
+                    this.showCalibrationMessage(`✅ Калибровка завершена! 1 см = ${Math.round(this.pixelPerCm * 10) / 10} пикселей.`);
+                    setTimeout(() => this.hideCalibrationMessage(), 3000);
+                } else {
+                    this.showCalibrationMessage('❌ Некорректный размер. Калибровка отменена.');
+                    setTimeout(() => this.hideCalibrationMessage(), 2000);
+                }
+            }
+
+            // Завершаем калибровку
+            this.calibrationMode = false;
+            this.calibrationPoints = [];
+
+            // Восстанавливаем обработчик размещения
+            const interiorImg = document.getElementById('arInteriorImage');
+            if (interiorImg) {
+                interiorImg.style.cursor = 'pointer';
+                interiorImg.onclick = (event) => this.placeImageOnUpload(event);
+            }
+
+            // Убираем маркеры
+            this.clearCalibrationMarkers();
+        }
     },
 
-    placeImageOnUpload(event) {
-        if (!this.currentImage) {
-            alert('Сначала выберите композицию из избранного (нажмите на сердечко в карточке товара)');
-            return;
-        }
-
+    drawCalibrationMarker(x, y) {
         const container = document.getElementById('arUploadOverlayContainer');
-        if (!container) return;
-
-        const containerRect = container.getBoundingClientRect();
-
-        let x, y;
-        if (event.touches) {
-            const touch = event.touches[0];
-            x = touch.clientX - containerRect.left;
-            y = touch.clientY - containerRect.top;
-        } else {
-            x = event.clientX - containerRect.left;
-            y = event.clientY - containerRect.top;
-        }
-
-        x = Math.min(Math.max(x, 20), containerRect.width - 20);
-        y = Math.min(Math.max(y, 20), containerRect.height - 20);
-
-        this.createPlaceableImage(x, y, container);
+        const marker = document.createElement('div');
+        marker.className = 'ar-calibration-marker';
+        marker.style.position = 'absolute';
+        marker.style.left = (x - 8) + 'px';
+        marker.style.top = (y - 8) + 'px';
+        marker.style.width = '16px';
+        marker.style.height = '16px';
+        marker.style.background = '#3b82f6';
+        marker.style.borderRadius = '50%';
+        marker.style.border = '2px solid white';
+        marker.style.boxShadow = '0 0 0 2px #3b82f6';
+        marker.style.zIndex = '30';
+        marker.style.pointerEvents = 'none';
+        marker.setAttribute('data-marker', 'true');
+        container.appendChild(marker);
     },
 
-    createPlaceableImage(x, y, container) {
-        // Создаём обертку для изображения
+    clearCalibrationMarkers() {
+        const container = document.getElementById('arUploadOverlayContainer');
+        const markers = container.querySelectorAll('[data-marker="true"]');
+        markers.forEach(marker => marker.remove());
+    },
+
+    showCalibrationMessage(message) {
+        let msgDiv = document.getElementById('arCalibrationMessage');
+        if (!msgDiv) {
+            msgDiv = document.createElement('div');
+            msgDiv.id = 'arCalibrationMessage';
+            msgDiv.className = 'ar-calibration-message';
+            const container = document.getElementById('arUploadOverlayContainer');
+            if (container) container.appendChild(msgDiv);
+        }
+        msgDiv.innerHTML = message;
+        msgDiv.style.display = 'block';
+    },
+
+    hideCalibrationMessage() {
+        const msgDiv = document.getElementById('arCalibrationMessage');
+        if (msgDiv) msgDiv.style.display = 'none';
+    },
+
+    resetCalibration() {
+        this.isCalibrated = false;
+        this.pixelPerCm = null;
+        this.calibrationMode = false;
+        this.calibrationPoints = [];
+        this.clearCalibrationMarkers();
+        this.hideCalibrationMessage();
+
+        // Восстанавливаем обработчик размещения
+        const interiorImg = document.getElementById('arInteriorImage');
+        if (interiorImg) {
+            interiorImg.style.cursor = 'pointer';
+            interiorImg.onclick = (event) => this.placeImageOnUpload(event);
+        }
+    },
+
+    getScaledSize() {
+        console.log('=== getScaledSize DEBUG ===');
+        console.log('isCalibrated:', this.isCalibrated);
+        console.log('pixelPerCm:', this.pixelPerCm);
+        console.log('currentProduct:', this.currentProduct);
+
+        // Если есть калибровка и у товара есть реальная высота
+        if (this.isCalibrated && this.pixelPerCm && this.currentProduct && this.currentProduct.heightCm) {
+            const calculatedSize = this.currentProduct.heightCm * this.pixelPerCm;
+            console.log(`Реальная высота товара: ${this.currentProduct.heightCm} см`);
+            console.log(`pixelPerCm: ${this.pixelPerCm} px/см`);
+            console.log(`Рассчитанный размер: ${calculatedSize} px`);
+            return calculatedSize;
+        }
+
+        console.log('Используем стандартный размер: 120 px');
+        // Без калибровки — стандартный размер 120px
+        return 120;
+    },
+
+    createPlaceableImageWithScale(x, y, container) {
+        if (!this.currentImage) {
+            alert('Сначала выберите композицию из избранного');
+            return;
+        }
+
+        const targetSize = this.getScaledSize();
+        console.log('=== createPlaceableImageWithScale DEBUG ===');
+        console.log('Размер для вставки:', targetSize, 'px');
+
+        // Загружаем изображение, чтобы узнать его реальные пропорции
+        const tempImg = new Image();
+        tempImg.onload = () => {
+            const imgWidth = tempImg.width;
+            const imgHeight = tempImg.height;
+            const aspectRatio = imgHeight / imgWidth;
+
+            console.log('Оригинальные размеры изображения:', imgWidth, 'x', imgHeight);
+            console.log('Соотношение сторон (высота/ширина):', aspectRatio);
+
+            // Вычисляем ширину на основе целевой высоты и пропорций
+            const finalHeight = targetSize;
+            const finalWidth = finalHeight / aspectRatio;
+
+            console.log('Итоговые размеры на фото:', finalWidth, 'x', finalHeight, 'px');
+
+            this.renderPlaceableImage(x, y, container, finalWidth, finalHeight);
+        };
+        tempImg.src = this.currentImage;
+    },
+
+    renderPlaceableImage(x, y, container, width, height) {
         const wrapper = document.createElement('div');
         wrapper.className = 'ar-image-wrapper';
         wrapper.style.position = 'absolute';
-        wrapper.style.left = (x - 60) + 'px';
-        wrapper.style.top = (y - 60) + 'px';
-        wrapper.style.width = '120px';
-        wrapper.style.height = '120px';
+        wrapper.style.left = (x - width / 2) + 'px';
+        wrapper.style.top = (y - height / 2) + 'px';
+        wrapper.style.width = width + 'px';
+        wrapper.style.height = height + 'px';
         wrapper.style.cursor = 'grab';
         wrapper.style.userSelect = 'none';
 
@@ -198,7 +341,7 @@ const ARPreview = {
         img.style.height = '100%';
         img.style.objectFit = 'contain';
         img.style.pointerEvents = 'none';
-        img.style.filter = 'drop-shadow(0 4px 8px rgba(0,0,0,0.15))';
+        img.style.filter = 'drop-shadow(0 4px 12px rgba(0,0,0,0.2))';
 
         // Кнопка удаления
         const deleteBtn = document.createElement('div');
@@ -233,7 +376,7 @@ const ARPreview = {
         resizeHandle.style.background = 'white';
         resizeHandle.style.borderRadius = '50%';
         resizeHandle.style.cursor = 'nw-resize';
-        resizeHandle.style.boxShadow = '0 2px 8px rgba(0,0,0,0.25)';
+        resizeHandle.style.boxShadow = '0 2px 8px rgba(0,0,0,0.2)';
         resizeHandle.style.display = 'flex';
         resizeHandle.style.alignItems = 'center';
         resizeHandle.style.justifyContent = 'center';
@@ -243,12 +386,9 @@ const ARPreview = {
         // Переменные для drag-and-drop
         let isDragging = false;
         let dragStartX, dragStartY, startLeft, startTop;
-
-        // Переменные для resize
         let isResizing = false;
         let resizeStartX, resizeStartY, startWidth, startHeight;
 
-        // Обработчики drag
         const startDrag = (clientX, clientY) => {
             isDragging = true;
             dragStartX = clientX;
@@ -256,7 +396,6 @@ const ARPreview = {
             startLeft = parseInt(wrapper.style.left);
             startTop = parseInt(wrapper.style.top);
             wrapper.style.cursor = 'grabbing';
-            wrapper.style.transition = 'none';
         };
 
         const onDragMove = (clientX, clientY) => {
@@ -266,7 +405,6 @@ const ARPreview = {
             let newLeft = startLeft + dx;
             let newTop = startTop + dy;
 
-            // Ограничения по границам контейнера
             const containerRect = container.getBoundingClientRect();
             const wrapperRect = wrapper.getBoundingClientRect();
             newLeft = Math.min(Math.max(newLeft, 0), containerRect.width - wrapperRect.width);
@@ -281,32 +419,26 @@ const ARPreview = {
             wrapper.style.cursor = 'grab';
         };
 
-        // Обработчики resize
         const startResize = (clientX, clientY) => {
             isResizing = true;
             resizeStartX = clientX;
             resizeStartY = clientY;
             startWidth = parseInt(wrapper.style.width);
             startHeight = parseInt(wrapper.style.height);
-            wrapper.style.transition = 'none';
         };
 
         const onResizeMove = (clientX, clientY) => {
             if (!isResizing) return;
             const dx = clientX - resizeStartX;
-            const dy = clientY - resizeStartY;
-            const newWidth = Math.max(60, Math.min(400, startWidth + dx));
-            const newHeight = newWidth; // Сохраняем пропорции
-
+            const newWidth = Math.max(40, Math.min(500, startWidth + dx));
             wrapper.style.width = newWidth + 'px';
-            wrapper.style.height = newHeight + 'px';
+            wrapper.style.height = newWidth + 'px';
         };
 
         const stopResize = () => {
             isResizing = false;
         };
 
-        // Mouse события
         wrapper.addEventListener('mousedown', (e) => {
             if (e.target === resizeHandle || resizeHandle.contains(e.target)) return;
             e.preventDefault();
@@ -329,7 +461,6 @@ const ARPreview = {
             if (isResizing) stopResize();
         });
 
-        // Touch события для мобильных
         wrapper.addEventListener('touchstart', (e) => {
             if (e.target === resizeHandle || resizeHandle.contains(e.target)) return;
             const touch = e.touches[0];
@@ -359,33 +490,89 @@ const ARPreview = {
         deleteBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             wrapper.remove();
+            const index = this.placedImages.indexOf(wrapper);
+            if (index > -1) this.placedImages.splice(index, 1);
         });
 
         wrapper.appendChild(img);
         wrapper.appendChild(resizeHandle);
         wrapper.appendChild(deleteBtn);
         container.appendChild(wrapper);
+        this.placedImages.push(wrapper);
+    },
+
+    placeImageOnUpload(event) {
+        if (!this.currentImage) {
+            alert('Сначала выберите композицию из избранного (нажмите на сердечко в карточке товара)');
+            return;
+        }
+
+        const container = document.getElementById('arUploadOverlayContainer');
+        if (!container) return;
+
+        const interiorImg = document.getElementById('arInteriorImage');
+        if (!interiorImg) return;
+
+        const imgRect = interiorImg.getBoundingClientRect();
+
+        let x, y;
+        if (event.touches) {
+            const touch = event.touches[0];
+            x = touch.clientX - imgRect.left;
+            y = touch.clientY - imgRect.top;
+        } else {
+            x = event.clientX - imgRect.left;
+            y = event.clientY - imgRect.top;
+        }
+
+        x = Math.min(Math.max(x, 20), imgRect.width - 20);
+        y = Math.min(Math.max(y, 20), imgRect.height - 20);
+
+        this.createPlaceableImageWithScale(x, y, container);
+    },
+
+    renderCalibrationPanel() {
+        const objectsHtml = Object.entries(this.calibrationObjects).map(([key, obj]) => `
+            <button class="ar-calib-object" data-object="${key}">
+                ${obj.icon} ${obj.name}
+                ${obj.sizeCm ? `(${obj.sizeCm} см)` : ''}
+            </button>
+        `).join('');
+
+        return `
+            <div class="ar-calibration-panel" id="arCalibrationPanel">
+                <div class="ar-calib-title">📏 Калибровка масштаба</div>
+                <p class="ar-calib-desc">Выберите предмет на фото, чтобы задать реальный масштаб</p>
+                <div class="ar-calib-objects">
+                    ${objectsHtml}
+                </div>
+                <button class="ar-calib-skip" id="arCalibSkip">Пропустить (ручной размер)</button>
+            </div>
+        `;
     },
 
     render() {
         const favoritesListHtml = this.favorites.length > 0
             ? this.favorites.map(product => `
-                <div class="ar-favorite-item" data-id="${product.id}" data-image="${product.images[0]}" data-name="${product.name}">
+                <div class="ar-favorite-item" data-id="${product.id}" data-image="${product.images[0]}" data-name="${product.name}" data-height="${product.heightCm || 45}" data-width="${product.widthCm || 35}">
                     <img src="${product.images[0]}" alt="${product.name}" class="ar-favorite-img" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 100 100\'%3E%3Crect width=\'100\' height=\'100\' fill=\'%23e8f5e9\'/%3E%3Ctext x=\'50\' y=\'55\' text-anchor=\'middle\' fill=\'%232e7d32\' font-size=\'12\'%3E🌾%3C/text%3E%3C/svg%3E'">
                     <div class="ar-favorite-info">
                         <div class="ar-favorite-name">${product.name}</div>
                         <div class="ar-favorite-price">${product.price} ₽</div>
+                        <div class="ar-favorite-size">${product.heightCm || 45} см</div>
                     </div>
                 </div>
             `).join('')
             : '<div class="ar-no-favorites">😢 Нет избранных композиций<br><small>Добавьте товары в избранное (нажмите на сердечко) и вернитесь сюда</small></div>';
+
+        const calibrationPanel = this.renderCalibrationPanel();
 
         return `
             <div class="ar-modal" id="arModal" style="display: flex;">
                 <div class="ar-modal-overlay"></div>
                 <div class="ar-modal-content">
                     <div class="ar-header">
-                        <h3 class="ar-title">📷 Примерка в интерьере</h3>
+                        <h3 class="ar-title">🖼️ Примерка в интерьере</h3>
                         <button class="ar-close" id="arCloseBtn">✕</button>
                     </div>
                     
@@ -396,55 +583,38 @@ const ARPreview = {
                         </div>
                     </div>
                     
-                    <div class="ar-tabs">
-                        <button class="ar-tab active" data-tab="camera">📷 Камера</button>
-                        <button class="ar-tab" data-tab="upload">🖼️ Загрузить фото</button>
-                    </div>
-                    
-                    <div class="ar-tab-content active" id="tabCamera">
-                        <div class="ar-camera-container">
-                            <div id="arOverlayContainer" class="ar-overlay-container">
-                                <video id="arVideo" class="ar-video" autoplay playsinline></video>
-                                <img id="arOverlayImage" class="ar-overlay-image" style="display: none;" alt="Композиция для примерки">
+                    <div class="ar-upload-section">
+                        <div class="ar-upload-area" id="arUploadArea">
+                            <input type="file" id="arFileInput" accept="image/*" style="display: none;">
+                            <button class="ar-upload-btn" id="arSelectFileBtn">📁 Загрузить фото интерьера</button>
+                            <p class="ar-upload-hint">Загрузите фото комнаты, стены или полки</p>
+                        </div>
+                        
+                        <div class="ar-preview-container">
+                            <div class="ar-selected-comp-position">
+                                <span>Выбранная композиция:</span>
+                                <span id="arSelectedName" class="ar-selected-name">${this.currentProduct ? `${this.currentProduct.name} (${this.currentProduct.heightCm} см)` : 'Не выбрана'}</span>
                             </div>
-                            <div class="ar-instruction">
-                                <p>📱 Наведите камеру на место в интерьере</p>
-                                <p>👆 Кликните по экрану, чтобы разместить композицию</p>
-                                <p>🖱️ Перетащите изображение пальцем или мышкой</p>
-                                <p>↘️ Потяните за уголок, чтобы изменить размер</p>
-                                <p>✕ Нажмите на крестик, чтобы удалить</p>
+                            <div class="ar-preview-img-container">
+                                <img id="arPreviewImage" class="ar-preview-img" style="display: none;" alt="Композиция для примерки">
                             </div>
+                        </div>
+                        
+                        <div id="arUploadOverlayContainer" class="ar-overlay-container" style="display: none;">
+                            <img id="arInteriorImage" class="ar-interior-image" alt="Интерьер">
+                            ${calibrationPanel}
+                        </div>
+                        
+                        <div class="ar-instruction" id="arInstruction" style="display: none;">
+                            <p>👆 Кликните по изображению интерьера, чтобы разместить композицию</p>
+                            <p>🖱️ Перетащите изображение пальцем или мышкой</p>
+                            <p>↘️ Потяните за уголок, чтобы изменить размер</p>
+                            <p>✕ Нажмите на крестик, чтобы удалить</p>
                         </div>
                     </div>
                     
-                    <div class="ar-tab-content" id="tabUpload">
-                        <div class="ar-upload-container">
-                            <div id="arUploadOverlayContainer" class="ar-overlay-container">
-                                <img id="arInteriorImage" class="ar-interior-image" style="display: none;" alt="Интерьер">
-                                <img id="arUploadOverlayImage" class="ar-overlay-image" style="display: none;" alt="Композиция для примерки">
-                            </div>
-                            <div class="ar-upload-area" id="arUploadArea">
-                                <input type="file" id="arFileInput" accept="image/*" style="display: none;">
-                                <button class="ar-upload-btn" id="arSelectFileBtn">📁 Выбрать фото интерьера</button>
-                                <p class="ar-upload-hint">Загрузите фото комнаты, стены или полки</p>
-                            </div>
-                            <div class="ar-instruction ar-upload-instruction" style="display: none;" id="arUploadInstruction">
-                                <p>👆 Кликните по изображению, чтобы разместить композицию</p>
-                                <p>🖱️ Перетащите изображение пальцем или мышкой</p>
-                                <p>↘️ Потяните за уголок, чтобы изменить размер</p>
-                                <p>✕ Нажмите на крестик, чтобы удалить</p>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="ar-footer">
-                        <button id="arStartBtn" class="ar-start-btn">📷 Запустить камеру</button>
-                        <button id="arStopBtn" class="ar-stop-btn" style="display: none;">⏹️ Остановить</button>
-                    </div>
-                    
-                    <div class="ar-selected">
-                        <span>Выбранная композиция:</span>
-                        <span id="arSelectedName" class="ar-selected-name">${this.currentProduct ? this.currentProduct.name : 'Не выбрана'}</span>
+                    <div class="ar-selected-info">
+                        <span>💡 Совет: используйте фото с хорошим освещением</span>
                     </div>
                 </div>
             </div>
@@ -453,60 +623,36 @@ const ARPreview = {
 
     bindEvents() {
         const closeBtn = document.getElementById('arCloseBtn');
-        const startBtn = document.getElementById('arStartBtn');
-        const stopBtn = document.getElementById('arStopBtn');
         const modal = document.getElementById('arModal');
-        const tabs = document.querySelectorAll('.ar-tab');
         const selectFileBtn = document.getElementById('arSelectFileBtn');
         const fileInput = document.getElementById('arFileInput');
 
-        const favoriteItems = document.querySelectorAll('.ar-favorite-item');
-        favoriteItems.forEach(item => {
-            item.onclick = () => {
-                const id = parseInt(item.dataset.id);
-                const image = item.dataset.image;
-                const name = item.dataset.name;
+        // Калибровка объектов
+        const calibObjects = document.querySelectorAll('.ar-calib-object');
+        calibObjects.forEach(btn => {
+            btn.onclick = () => {
+                const objectId = btn.dataset.object;
+                this.startCalibration(objectId);
 
-                favoriteItems.forEach(fi => fi.classList.remove('active'));
-                item.classList.add('active');
-
-                this.currentImage = image;
-                this.currentProduct = { id, name, images: [image] };
-                this.setImage(image);
-
-                const selectedName = document.getElementById('arSelectedName');
-                if (selectedName) {
-                    selectedName.textContent = name;
-                    selectedName.style.color = '#059669';
-                }
+                // Скрываем панель калибровки
+                const panel = document.getElementById('arCalibrationPanel');
+                if (panel) panel.style.display = 'none';
             };
         });
 
-        tabs.forEach(tab => {
-            tab.onclick = () => {
-                const tabId = tab.dataset.tab;
-                tabs.forEach(t => t.classList.remove('active'));
-                tab.classList.add('active');
-
-                document.querySelectorAll('.ar-tab-content').forEach(content => {
-                    content.classList.remove('active');
-                });
-
-                if (tabId === 'camera') {
-                    document.getElementById('tabCamera').classList.add('active');
-                } else {
-                    document.getElementById('tabUpload').classList.add('active');
-                    this.stopCamera();
-                    if (startBtn) startBtn.style.display = 'block';
-                    if (stopBtn) stopBtn.style.display = 'none';
-                }
+        // Пропустить калибровку
+        const skipBtn = document.getElementById('arCalibSkip');
+        if (skipBtn) {
+            skipBtn.onclick = () => {
+                const panel = document.getElementById('arCalibrationPanel');
+                if (panel) panel.style.display = 'none';
+                this.resetCalibration();
             };
-        });
+        }
 
         if (closeBtn) {
             closeBtn.onclick = (e) => {
                 e.stopPropagation();
-                this.stopCamera();
                 this.hide();
             };
         }
@@ -514,54 +660,7 @@ const ARPreview = {
         if (modal) {
             modal.onclick = (e) => {
                 if (e.target === modal || e.target.classList.contains('ar-modal-overlay')) {
-                    this.stopCamera();
                     this.hide();
-                }
-            };
-        }
-
-        if (startBtn) {
-            startBtn.onclick = async () => {
-                await this.startCamera();
-                startBtn.style.display = 'none';
-                if (stopBtn) stopBtn.style.display = 'block';
-            };
-        }
-
-        if (stopBtn) {
-            stopBtn.onclick = () => {
-                this.stopCamera();
-                startBtn.style.display = 'block';
-                stopBtn.style.display = 'none';
-            };
-        }
-
-        const cameraContainer = document.getElementById('arOverlayContainer');
-        if (cameraContainer) {
-            cameraContainer.onclick = (e) => {
-                if (e.target === cameraContainer || e.target.id === 'arOverlayContainer') {
-                    this.placeImageWithScale(e);
-                }
-            };
-            cameraContainer.ontouchstart = (e) => {
-                if (e.target === cameraContainer || e.target.id === 'arOverlayContainer') {
-                    e.preventDefault();
-                    this.placeImageWithScale(e);
-                }
-            };
-        }
-
-        const uploadContainer = document.getElementById('arUploadOverlayContainer');
-        if (uploadContainer) {
-            uploadContainer.onclick = (e) => {
-                if (e.target === uploadContainer || e.target.id === 'arUploadOverlayContainer') {
-                    this.placeImageOnUpload(e);
-                }
-            };
-            uploadContainer.ontouchstart = (e) => {
-                if (e.target === uploadContainer || e.target.id === 'arUploadOverlayContainer') {
-                    e.preventDefault();
-                    this.placeImageOnUpload(e);
                 }
             };
         }
@@ -577,20 +676,16 @@ const ARPreview = {
                 const file = e.target.files[0];
                 if (file) {
                     const uploadContainer = document.getElementById('arUploadOverlayContainer');
-                    const uploadInstruction = document.getElementById('arUploadInstruction');
-                    const uploadAreaDiv = document.getElementById('arUploadArea');
+                    const instruction = document.getElementById('arInstruction');
+                    const uploadArea = document.getElementById('arUploadArea');
+                    const calibPanel = document.getElementById('arCalibrationPanel');
 
                     await this.uploadInteriorImage(file);
 
-                    if (uploadContainer) {
-                        uploadContainer.style.display = 'block';
-                    }
-                    if (uploadInstruction) {
-                        uploadInstruction.style.display = 'block';
-                    }
-                    if (uploadAreaDiv) {
-                        uploadAreaDiv.style.display = 'none';
-                    }
+                    if (uploadContainer) uploadContainer.style.display = 'block';
+                    if (instruction) instruction.style.display = 'block';
+                    if (uploadArea) uploadArea.style.display = 'none';
+                    if (calibPanel) calibPanel.style.display = 'block';
                 }
             };
         }
@@ -599,7 +694,6 @@ const ARPreview = {
             if (e.key === 'Escape') {
                 const modalElement = document.getElementById('arModal');
                 if (modalElement && modalElement.style.display !== 'none') {
-                    this.stopCamera();
                     this.hide();
                 }
             }
@@ -617,7 +711,7 @@ const ARPreview = {
     },
 
     hide() {
-        this.stopCamera();
+        this.resetCalibration();
         const container = document.getElementById('ar-preview-container');
         if (container) {
             container.innerHTML = '';
@@ -630,11 +724,11 @@ const ARPreview = {
     selectProduct(product) {
         this.currentImage = product.images[0];
         this.currentProduct = product;
-        this.setImage(product.images[0]);
+        this.setPreviewImage(product.images[0]);
 
         const nameSpan = document.getElementById('arSelectedName');
         if (nameSpan) {
-            nameSpan.textContent = product.name;
+            nameSpan.textContent = `${product.name} (${product.heightCm} см)`;
             nameSpan.style.color = '#059669';
         }
 

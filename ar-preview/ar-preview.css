@@ -27,7 +27,7 @@
     position: relative;
     background: white;
     border-radius: 28px;
-    max-width: 550px;
+    max-width: 600px;
     width: 100%;
     max-height: 90vh;
     overflow-y: auto;
@@ -171,47 +171,81 @@
     border-radius: 12px;
 }
 
-/* Вкладки */
-.ar-tabs {
-    display: flex;
-    padding: 0 20px;
-    gap: 10px;
-    border-bottom: 1px solid #e5e7eb;
-    background: white;
+/* Upload секция */
+.ar-upload-section {
+    padding: 20px;
 }
 
-.ar-tab {
-    flex: 1;
-    padding: 14px 12px;
-    background: none;
+.ar-upload-area {
+    text-align: center;
+    padding: 40px 20px;
+    background: #f9fafb;
+    border-radius: 20px;
+    border: 2px dashed #e5e7eb;
+    margin-bottom: 20px;
+}
+
+.ar-upload-btn {
+    background: #059669;
+    color: white;
+    padding: 12px 28px;
+    border-radius: 40px;
     border: none;
     font-size: 14px;
     font-weight: 500;
-    color: #6b7280;
     cursor: pointer;
     transition: all 0.3s;
 }
 
-.ar-tab.active {
+.ar-upload-btn:hover {
+    background: #047857;
+    transform: translateY(-2px);
+}
+
+.ar-upload-hint {
+    margin-top: 12px;
+    font-size: 12px;
+    color: #6b7280;
+}
+
+/* Preview композиции */
+.ar-preview-container {
+    margin-bottom: 20px;
+}
+
+.ar-selected-comp-position {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px;
+    background: #f3f4f6;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: #6b7280;
+}
+
+.ar-selected-name {
+    font-weight: 600;
     color: #059669;
-    border-bottom: 2px solid #059669;
 }
 
-.ar-tab-content {
-    display: none;
-    padding: 20px;
+.ar-preview-img-container {
+    text-align: center;
+    padding: 16px;
+    background: #f9fafb;
+    border-radius: 16px;
+    border: 1px solid #e5e7eb;
 }
 
-.ar-tab-content.active {
-    display: block;
+.ar-preview-img {
+    max-width: 100px;
+    max-height: 100px;
+    object-fit: contain;
+    margin: 0 auto;
 }
 
-/* Контейнер камеры и загруженного фото */
-.ar-camera-container,
-.ar-upload-container {
-    position: relative;
-}
-
+/* Overlay контейнер для интерьера */
 .ar-overlay-container {
     position: relative;
     width: 100%;
@@ -220,13 +254,7 @@
     overflow: hidden;
     cursor: crosshair;
     min-height: 400px;
-}
-
-.ar-video {
-    width: 100%;
-    height: auto;
-    display: block;
-    transform: scaleX(-1);
+    margin-top: 16px;
 }
 
 .ar-interior-image {
@@ -236,33 +264,12 @@
     border-radius: 16px;
 }
 
-.ar-overlay-image {
-    position: absolute;
-    bottom: 16px;
-    right: 16px;
-    width: 60px;
-    height: 60px;
-    object-fit: contain;
-    background: rgba(255, 255, 255, 0.95);
-    border-radius: 12px;
-    padding: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    cursor: pointer;
-    transition: transform 0.3s;
-    z-index: 15;
-}
-
-.ar-overlay-image:hover {
-    transform: scale(1.05);
-}
-
 /* Размещённые изображения */
 .ar-image-wrapper {
     position: absolute;
     cursor: grab;
     user-select: none;
     z-index: 20;
-    transition: none;
 }
 
 .ar-image-wrapper:active {
@@ -275,11 +282,6 @@
     object-fit: contain;
     pointer-events: none;
     filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.25));
-    transition: filter 0.2s;
-}
-
-.ar-placed-image:hover {
-    filter: drop-shadow(0 6px 18px rgba(0, 0, 0, 0.35));
 }
 
 /* Кнопка удаления */
@@ -346,100 +348,15 @@
     margin: 4px 0;
 }
 
-/* Площадка загрузки фото */
-.ar-upload-area {
-    text-align: center;
-    padding: 40px 20px;
-    background: #f9fafb;
-    border-radius: 20px;
-    border: 2px dashed #e5e7eb;
-    margin-bottom: 16px;
-}
-
-.ar-upload-btn {
-    background: #059669;
-    color: white;
-    padding: 12px 28px;
-    border-radius: 40px;
-    border: none;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.ar-upload-btn:hover {
-    background: #047857;
-    transform: translateY(-2px);
-}
-
-.ar-upload-hint {
-    margin-top: 12px;
-    font-size: 12px;
-    color: #6b7280;
-}
-
-.ar-upload-instruction {
-    margin-top: 16px;
-}
-
 /* Footer */
-.ar-footer {
-    padding: 16px 24px;
-    display: flex;
-    gap: 12px;
-    border-top: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
-}
-
-.ar-start-btn,
-.ar-stop-btn {
-    flex: 1;
-    padding: 12px;
-    border-radius: 40px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: all 0.3s;
-}
-
-.ar-start-btn {
-    background: #059669;
-    color: white;
-    border: none;
-}
-
-.ar-start-btn:hover {
-    background: #047857;
-    transform: translateY(-2px);
-}
-
-.ar-stop-btn {
-    background: #ef4444;
-    color: white;
-    border: none;
-}
-
-.ar-stop-btn:hover {
-    background: #dc2626;
-    transform: translateY(-2px);
-}
-
-/* Выбранная композиция */
-.ar-selected {
+.ar-selected-info {
     padding: 16px 24px;
     background: #f9fafb;
     border-radius: 0 0 28px 28px;
-    font-size: 14px;
+    font-size: 13px;
     color: #6b7280;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.ar-selected-name {
-    font-weight: 600;
-    color: #059669;
+    text-align: center;
+    border-top: 1px solid #e5e7eb;
 }
 
 /* Адаптивность */
@@ -471,31 +388,12 @@
         height: 40px;
     }
 
-    .ar-favorite-name {
-        font-size: 12px;
-    }
-
-    .ar-favorite-price {
-        font-size: 11px;
-    }
-
     .ar-overlay-container {
         min-height: 350px;
     }
 
     .ar-instruction p {
         font-size: 10px;
-    }
-
-    .ar-start-btn,
-    .ar-stop-btn {
-        padding: 10px;
-        font-size: 13px;
-    }
-
-    .ar-selected {
-        font-size: 12px;
-        padding: 12px 18px;
     }
 }
 
@@ -504,16 +402,108 @@
         min-height: 280px;
     }
 
-    .ar-tab {
-        padding: 10px 8px;
-        font-size: 12px;
+    .ar-upload-area {
+        padding: 30px 16px;
     }
 
     .ar-favorites-section {
         padding: 12px 16px;
     }
 
-    .ar-tab-content {
+    .ar-upload-section {
         padding: 16px;
+    }
+}
+
+/* Панель калибровки */
+.ar-calibration-panel {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    z-index: 40;
+}
+
+.ar-calib-title {
+    font-size: 16px;
+    font-weight: 600;
+    color: #064e3b;
+    margin-bottom: 8px;
+}
+
+.ar-calib-desc {
+    font-size: 12px;
+    color: #6b7280;
+    margin-bottom: 12px;
+}
+
+.ar-calib-objects {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 12px;
+}
+
+.ar-calib-object {
+    background: #f3f4f6;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 40px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.ar-calib-object:hover {
+    background: #059669;
+    color: white;
+}
+
+.ar-calib-skip {
+    width: 100%;
+    background: none;
+    border: none;
+    padding: 8px;
+    font-size: 12px;
+    color: #9ca3af;
+    cursor: pointer;
+    text-decoration: underline;
+}
+
+/* Сообщение калибровки */
+.ar-calibration-message {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    background: #3b82f6;
+    color: white;
+    padding: 12px;
+    border-radius: 12px;
+    font-size: 14px;
+    text-align: center;
+    z-index: 35;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Маркеры калибровки */
+.ar-calibration-marker {
+    position: absolute;
+    animation: pulse 0.5s ease-out;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(0.5);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 0.5;
     }
 }
